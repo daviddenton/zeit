@@ -1,0 +1,23 @@
+{
+    "name": "zeit",
+    "version": "0.0.0",
+    "description": "zeit ====",
+    "main": "index.js",
+    "scripts": {
+        "test": "test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/daviddenton/zeit.git"
+    },
+    "keywords": [
+        "time", "clock", "scheduler"
+    ],
+    "author": "daviddenton",
+    "license": "Apache 2.0",
+    "readmeFilename": "README.md",
+    "gitHead": "6483eccd2130766837864a5b5aa4fcff5414e7a5",
+    "dependencies": {
+        "q": "0.9.7"
+    }
+}
