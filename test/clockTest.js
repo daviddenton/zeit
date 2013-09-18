@@ -1,10 +1,57 @@
 'use strict';
 
-var zeit = require('../'), moment = require('moment'), assert = require('chai').assert;
+var chai = require('chai');
+var zeit = require('../'), moment = require('moment'), assert = chai.assert;
+
+chai.use(require('chai-timers'));
 
 describe('a date based clock', function () {
+    var clock = new zeit.DateClock();
+
     it('now()', function () {
-        assert.equal(new zeit.DateClock().now().toString(), new Date().toString());
+        assert.equal(clock.now().toString(), new Date().toString());
+    });
+
+    it('can set and cancel interval', function (done) {
+        var timer = new chai.Timer().start();
+
+        var interval = 10;
+        var calls = 0;
+        var id = clock.setInterval(function () {
+            calls++;
+            if (calls === 2) {
+                clock.clearInterval(id);
+                timer.stop();
+                assert.ok(timer.elapsed > interval * 2);
+                done();
+            }
+        }, interval);
+    });
+
+    it('can set timeout', function (done) {
+        var timer = new chai.Timer().start();
+
+        var interval = 10;
+        var id = clock.setTimeout(function () {
+            timer.stop();
+            assert.ok(timer.elapsed > interval);
+            done();
+        }, interval);
+    });
+
+    it('can cancel timeout', function (done) {
+        var timer = new chai.Timer().start();
+
+        var interval = 10;
+        var calls = 0;
+        clock.setTimeout(function () {
+            assert.ok(calls === 0);
+            done();
+        }, interval * 2);
+        var id = clock.setTimeout(function () {
+            assert.fail();
+        }, interval);
+        clock.clearTimeout(id);
     });
 });
 

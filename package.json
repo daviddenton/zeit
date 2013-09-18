@@ -24,6 +24,7 @@
     "devDependencies": {
         "moment": "2.2.1",
         "mocha": "1.13.0",
-        "chai": "1.7.2"
+        "chai": "1.7.2",
+        "chai-timers": "0.2.0"
     }
 }
