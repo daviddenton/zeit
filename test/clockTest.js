@@ -54,112 +54,118 @@ function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
     });
 }
 
-function describeStubClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds) {
+function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds) {
     describe(name, function () {
 
-        var defaultClock
-        var customClock;
-
-        beforeEach(function (done) {
-            defaultClock = new ctrFn();
-            customClock = new ctrFn(timeAtSeconds(1), durationOfSeconds(2), false);
-            done();
-        });
-
         it('default settings for clock', function () {
-            assert.equal(defaultClock.implicitTick(), false);
-            assert.momentEql(defaultClock.now(), timeAtSeconds(0));
-            assert.momentEql(defaultClock.tickSize(), durationOfSeconds(1));
+            var clock = new CtrFn();
+            assert.equal(clock.implicitTick(), false);
+            assert.momentEql(clock.now(), timeAtSeconds(0));
+            assert.momentEql(clock.tickSize(), durationOfSeconds(1));
         });
 
         it('constructor settings for clock', function () {
-            assert.equal(customClock.implicitTick(), false);
-            assert.momentEql(customClock.now(), timeAtSeconds(1));
-            assert.momentEql(customClock.tickSize(), durationOfSeconds(2));
+            var clock = new CtrFn(timeAtSeconds(1), durationOfSeconds(2), false);
+            assert.equal(clock.implicitTick(), false);
+            assert.momentEql(clock.now(), timeAtSeconds(1));
+            assert.momentEql(clock.tickSize(), durationOfSeconds(2));
         });
 
         it('now() uses default time and no implicit tick', function () {
-            assert.momentEql(defaultClock.now(), timeAtSeconds(0));
-            assert.momentEql(defaultClock.now(), timeAtSeconds(0));
+            var clock = new CtrFn();
+            assert.momentEql(clock.now(), timeAtSeconds(0));
+            assert.momentEql(clock.now(), timeAtSeconds(0));
         });
 
         it('now() using custom time', function () {
-            assert.momentEql(customClock.now(), timeAtSeconds(1));
+            var clock = new CtrFn(timeAtSeconds(1), durationOfSeconds(2), false);
+            assert.momentEql(clock.now(), timeAtSeconds(1));
         });
 
         it('now() can modify time', function () {
-            assert.momentEql(defaultClock.now(timeAtSeconds(1)), timeAtSeconds(1));
+            var clock = new CtrFn();
+            assert.momentEql(clock.now(timeAtSeconds(1)), timeAtSeconds(1));
         });
 
         it('tick() uses default ticksize', function () {
-            assert.momentEql(defaultClock.tick(), timeAtSeconds(1));
-            assert.momentEql(defaultClock.now(), timeAtSeconds(1));
+            var clock = new CtrFn();
+            assert.momentEql(clock.tick(), timeAtSeconds(1));
+            assert.momentEql(clock.now(), timeAtSeconds(1));
         });
 
         it('tick() set to ticksize set on construction', function () {
-            assert.momentEql(customClock.tick(), timeAtSeconds(3));
-            assert.momentEql(customClock.now(), timeAtSeconds(3));
+            var clock = new CtrFn(timeAtSeconds(1), durationOfSeconds(2), false);
+            assert.momentEql(clock.tick(), timeAtSeconds(3));
+            assert.momentEql(clock.now(), timeAtSeconds(3));
         });
 
         it('tick() by custom amount', function () {
-            assert.momentEql(defaultClock.tick(durationOfSeconds(2)), timeAtSeconds(2));
-            assert.momentEql(defaultClock.now(), timeAtSeconds(2));
+            var clock = new CtrFn();
+            assert.momentEql(clock.tick(durationOfSeconds(2)), timeAtSeconds(2));
+            assert.momentEql(clock.now(), timeAtSeconds(2));
         });
 
         it('tickSize() modifies tick size', function () {
-            assert.momentEql(defaultClock.tickSize(durationOfSeconds(2)), durationOfSeconds(2));
-            defaultClock.tick();
-            assert.momentEql(defaultClock.now(), timeAtSeconds(2));
+            var clock = new CtrFn();
+            assert.momentEql(clock.tickSize(durationOfSeconds(2)), durationOfSeconds(2));
+            clock.tick();
+            assert.momentEql(clock.now(), timeAtSeconds(2));
         });
 
         it('implicitTick() can turn on and off the tick when calling now()', function () {
-            assert.momentEql(defaultClock.now(), timeAtSeconds(0));
-            assert.equal(defaultClock.implicitTick(true), true);
-            assert.momentEql(defaultClock.now(), timeAtSeconds(1));
-            assert.equal(defaultClock.implicitTick(false), false);
-            assert.momentEql(defaultClock.now(), timeAtSeconds(1));
+            var clock = new CtrFn();
+            assert.momentEql(clock.now(), timeAtSeconds(0));
+            assert.equal(clock.implicitTick(true), true);
+            assert.momentEql(clock.now(), timeAtSeconds(1));
+            assert.equal(clock.implicitTick(false), false);
+            assert.momentEql(clock.now(), timeAtSeconds(1));
         });
 
         function Capture() {
             var calls = 0;
-            var fn = function() {
-              calls++;;
+            var fn = function () {
+                calls++;
+                ;
             };
-            fn.count = function() {
+            fn.count = function () {
                 return calls;
             }
             return fn;
         }
 
-        it('timeouts trigger then cancel', function() {
+        it('timeouts trigger then cancel', function () {
+            var clock = new CtrFn();
             var cb = new Capture();
-            defaultClock.setTimeout(cb, 10);
-            defaultClock.triggerAll();
+            clock.setTimeout(cb, 10);
+            clock.triggerAll();
             assert.equal(cb.count(), 1);
-            defaultClock.triggerAll();
+            clock.triggerAll();
             assert.equal(cb.count(), 1);
         });
 
-        it('cancel timeouts', function() {
+        it('cancel timeouts', function () {
+            var clock = new CtrFn();
             var cb = new Capture();
-            defaultClock.clearTimeout(defaultClock.setTimeout(cb, 10));
-            defaultClock.triggerAll();
+            clock.clearTimeout(clock.setTimeout(cb, 10));
+            clock.triggerAll();
             assert.equal(cb.count(), 0);
         })
 
-        it('intervals trigger then stay', function() {
+        it('intervals trigger then stay', function () {
+            var clock = new CtrFn();
             var cb = new Capture();
-            defaultClock.setInterval(cb, 10);
-            defaultClock.triggerAll();
+            clock.setInterval(cb, 10);
+            clock.triggerAll();
             assert.equal(cb.count(), 1);
-            defaultClock.triggerAll();
+            clock.triggerAll();
             assert.equal(cb.count(), 2);
         });
 
-        it('cancel timeouts', function() {
+        it('cancel timeouts', function () {
+            var clock = new CtrFn();
             var cb = new Capture();
-            defaultClock.clearInterval(defaultClock.setInterval(cb, 10));
-            defaultClock.triggerAll();
+            clock.clearInterval(clock.setInterval(cb, 10));
+            clock.triggerAll();
             assert.equal(cb.count(), 0);
         })
     });
@@ -167,11 +173,11 @@ function describeStubClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds
 
 describeClockContract('date based', zeit.DateClock, function (i) {return 10 * i;}, function () {
     return new Date();
-}, function(a, b) {return a >= b});
+}, function (a, b) {return a >= b});
 
 describeClockContract('moment based', zeit.MomentClock, function (i) {return moment.duration(10 * i);}, function () {
     return moment();
-}, function(a, b) {return a >= b.asMilliseconds();});
+}, function (a, b) {return a >= b.asMilliseconds();});
 
 describeStubClockContract('stub moment clock', zeit.StubMomentClock, function (seconds) {
     return moment(seconds * 1000)
