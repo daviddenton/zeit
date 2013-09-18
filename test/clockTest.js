@@ -56,7 +56,7 @@ function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
     });
 }
 
-function describeTestClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds) {
+function describeStubClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds) {
     describe(name, function () {
 
         var defaultClock
@@ -120,6 +120,49 @@ function describeTestClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds
             assert.equal(defaultClock.implicitTick(false), false);
             assert.momentEql(defaultClock.now(), timeAtSeconds(1));
         });
+
+        function Capture() {
+            var calls = 0;
+            var fn = function() {
+              calls++;;
+            };
+            fn.count = function() {
+                return calls;
+            }
+            return fn;
+        }
+
+        it('timeouts trigger then cancel', function() {
+            var cb = new Capture();
+            defaultClock.setTimeout(cb, 10);
+            defaultClock.triggerAll();
+            assert.equal(cb.count(), 1);
+            defaultClock.triggerAll();
+            assert.equal(cb.count(), 1);
+        });
+
+        it('cancel timeouts', function() {
+            var cb = new Capture();
+            defaultClock.clearTimeout(defaultClock.setTimeout(cb, 10));
+            defaultClock.triggerAll();
+            assert.equal(cb.count(), 0);
+        })
+
+        it('intervals trigger then stay', function() {
+            var cb = new Capture();
+            defaultClock.setInterval(cb, 10);
+            defaultClock.triggerAll();
+            assert.equal(cb.count(), 1);
+            defaultClock.triggerAll();
+            assert.equal(cb.count(), 2);
+        });
+
+        it('cancel timeouts', function() {
+            var cb = new Capture();
+            defaultClock.clearInterval(defaultClock.setInterval(cb, 10));
+            defaultClock.triggerAll();
+            assert.equal(cb.count(), 0);
+        })
     });
 }
 
@@ -131,13 +174,13 @@ describeClockContract('moment based', zeit.MomentClock, function (i) {return mom
     return moment();
 }, function(a, b) {return a >= b.asMilliseconds();});
 
-describeTestClockContract('stub moment clock', zeit.StubMomentClock, function (seconds) {
+describeStubClockContract('stub moment clock', zeit.StubMomentClock, function (seconds) {
     return moment(seconds * 1000)
 }, function (seconds) {
     return moment.duration(seconds, 'second');
 });
 
-describeTestClockContract('stub date clock', zeit.StubDateClock, function (seconds) {
+describeStubClockContract('stub date clock', zeit.StubDateClock, function (seconds) {
     return new Date(seconds * 1000);
 }, function (seconds) {
     return seconds * 1000;
