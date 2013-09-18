@@ -43,14 +43,12 @@ function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
         });
 
         it('can cancel timeout', function (done) {
-            var calls = 0;
             clock.setTimeout(function () {
-                assert.ok(calls === 0);
                 done();
-            }, intervalFn(2));
+            }, intervalFn(10));
             var id = clock.setTimeout(function () {
                 assert.fail();
-            }, intervalFn(1));
+            }, intervalFn(5));
             clock.clearTimeout(id);
         });
     });
