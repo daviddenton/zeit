@@ -7,7 +7,7 @@ chai.use(require('chai-timers'));
 
 assert.momentEql = function (expected, actual) {
     assert.equal(expected.toString(), actual.toString());
-}
+};
 
 function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
     describe(name + ' clock', function () {
@@ -125,11 +125,10 @@ function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds
             var calls = 0;
             var fn = function () {
                 calls++;
-                ;
             };
             fn.count = function () {
                 return calls;
-            }
+            };
             return fn;
         }
 
