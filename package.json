@@ -4,7 +4,7 @@
     "description": "zeit ====",
     "main": "index.js",
     "scripts": {
-        "test": "test"
+        "test": "node_modules/mocha/bin/mocha -w"
     },
     "repository": {
         "type": "git",
@@ -18,6 +18,12 @@
     "readmeFilename": "README.md",
     "gitHead": "6483eccd2130766837864a5b5aa4fcff5414e7a5",
     "dependencies": {
-        "q": "0.9.7"
+        "q": "0.9.7",
+        "lodash": "2.0.0"
+    },
+    "devDependencies": {
+        "moment": "2.2.1",
+        "mocha": "1.13.0",
+        "chai": "1.7.2"
     }
 }
