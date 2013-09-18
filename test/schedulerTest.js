@@ -83,23 +83,24 @@ describe('scheduler', function () {
         var id;
         var hasRun = 0;
 
-        it('triggers a repeating promise right away', function () {
+        it('triggers a repeating promise right away', function (done) {
             id = scheduler.scheduleEvery(function () {
                 hasRun++;
                 return q.resolve();
             }, moment.duration(10), 'some name');
-            _.defer(function () {
+            setTimeout(function () {
                 assert.equal(hasRun, 1);
-            })
+                done();
+            }, 100);
         });
 
         it('triggers a repeating promise again', function (done) {
             clock.triggerAll();
-            _.defer(function () {
+            setTimeout(function () {
                 assert.equal(hasRun, 2);
                 assert.notEqual([scheduler.activeSchedules()[id]], undefined);
                 done();
-            })
+            }, 100);
         });
 
         it('emits the correct events', function () {
