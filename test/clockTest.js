@@ -56,14 +56,6 @@ function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
     });
 }
 
-describeClockContract('date based', zeit.DateClock, function (i) {return 10 * i;}, function () {
-    return new Date();
-}, function(a, b) {return a > b});
-
-describeClockContract('moment based', zeit.MomentClock, function (i) {return moment.duration(10 * i);}, function () {
-    return moment();
-}, function(a, b) {return a > b.asMilliseconds();});
-
 function describeTestClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds) {
     describe(name, function () {
 
@@ -129,7 +121,15 @@ function describeTestClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds
             assert.momentEql(defaultClock.now(), timeAtSeconds(1));
         });
     });
-};
+}
+
+describeClockContract('date based', zeit.DateClock, function (i) {return 10 * i;}, function () {
+    return new Date();
+}, function(a, b) {return a >= b});
+
+describeClockContract('moment based', zeit.MomentClock, function (i) {return moment.duration(10 * i);}, function () {
+    return moment();
+}, function(a, b) {return a >= b.asMilliseconds();});
 
 describeTestClockContract('stub moment clock', zeit.StubMomentClock, function (seconds) {
     return moment(seconds * 1000)
