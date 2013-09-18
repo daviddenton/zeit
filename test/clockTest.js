@@ -22,7 +22,8 @@ assert.momentEql = function(expected, actual) {
 describe('a stub moment clock', function () {
     var DEFAULT_TIME = moment(0);
     var DEFAULT_TICK = moment.duration(1, 'second');
-    var customTick = moment.duration(2, 'second');
+    var nonStandardTick = moment.duration(2, 'second');
+    var nonDefaultTime = moment(1234);
 
     it('now() uses default time and no implicit tick', function () {
         var clock = new zeit.StubMomentClock();
@@ -31,12 +32,10 @@ describe('a stub moment clock', function () {
     });
 
     it('now() using custom time', function () {
-        var nonDefaultTime = moment(1234);
         assert.momentEql(new zeit.StubMomentClock(nonDefaultTime).now(), nonDefaultTime);
     });
 
     it('now() can modify time', function () {
-        var nonDefaultTime = moment(1234);
         assert.momentEql(new zeit.StubMomentClock().now(nonDefaultTime), nonDefaultTime);
     });
 
@@ -47,19 +46,18 @@ describe('a stub moment clock', function () {
     });
 
     it('tick() set to ticksize set on construction', function () {
-        var clock = new zeit.StubMomentClock(DEFAULT_TIME, customTick);
-        assert.momentEql(clock.tick(), moment(DEFAULT_TIME).add(customTick));
-        assert.momentEql(clock.now(), moment(DEFAULT_TIME).add(customTick));
+        var clock = new zeit.StubMomentClock(DEFAULT_TIME, nonStandardTick);
+        assert.momentEql(clock.tick(), moment(DEFAULT_TIME).add(nonStandardTick));
+        assert.momentEql(clock.now(), moment(DEFAULT_TIME).add(nonStandardTick));
     });
 
     it('tick() by custom amount', function () {
         var clock = new zeit.StubMomentClock();
-        assert.momentEql(clock.tick(customTick), moment(DEFAULT_TIME).add(customTick));
-        assert.momentEql(clock.now(), moment(DEFAULT_TIME).add(customTick));
+        assert.momentEql(clock.tick(nonStandardTick), moment(DEFAULT_TIME).add(nonStandardTick));
+        assert.momentEql(clock.now(), moment(DEFAULT_TIME).add(nonStandardTick));
     });
 
     it('tickSize() modifies tick size', function () {
-        var nonStandardTick = moment.duration(1, 'second');
         var clock = new zeit.StubMomentClock();
         clock.tick();
         assert.momentEql(clock.tickSize(), DEFAULT_TICK);
@@ -68,11 +66,13 @@ describe('a stub moment clock', function () {
         assert.momentEql(clock.now(), moment(DEFAULT_TIME).add(DEFAULT_TICK).add(nonStandardTick));
     });
 
-    it('implicitTick() can turn on and off the tick when calling now', function () {
+    it('implicitTick() can turn on and off the tick when calling now()', function () {
         var clock = new zeit.StubMomentClock();
         assert.momentEql(clock.now(), DEFAULT_TIME);
         assert.equal(clock.implicitTick(), false);
         assert.equal(clock.implicitTick(true), true);
+        assert.momentEql(clock.now(), moment(DEFAULT_TIME).add(DEFAULT_TICK));
+        assert.equal(clock.implicitTick(false), false);
         assert.momentEql(clock.now(), moment(DEFAULT_TIME).add(DEFAULT_TICK));
     });
 });
