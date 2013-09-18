@@ -5,65 +5,64 @@ var zeit = require('../'), moment = require('moment'), assert = chai.assert;
 
 chai.use(require('chai-timers'));
 
-describe('a date based clock', function () {
-    var clock = new zeit.DateClock();
-
-    it('now()', function () {
-        assert.equal(clock.now().toString(), new Date().toString());
-    });
-
-    it('can set and cancel interval', function (done) {
-        var timer = new chai.Timer().start();
-
-        var interval = 10;
-        var calls = 0;
-        var id = clock.setInterval(function () {
-            calls++;
-            if (calls === 2) {
-                clock.clearInterval(id);
-                timer.stop();
-                assert.ok(timer.elapsed > interval * 2);
-                done();
-            }
-        }, interval);
-    });
-
-    it('can set timeout', function (done) {
-        var timer = new chai.Timer().start();
-
-        var interval = 10;
-        var id = clock.setTimeout(function () {
-            timer.stop();
-            assert.ok(timer.elapsed > interval);
-            done();
-        }, interval);
-    });
-
-    it('can cancel timeout', function (done) {
-        var timer = new chai.Timer().start();
-
-        var interval = 10;
-        var calls = 0;
-        clock.setTimeout(function () {
-            assert.ok(calls === 0);
-            done();
-        }, interval * 2);
-        var id = clock.setTimeout(function () {
-            assert.fail();
-        }, interval);
-        clock.clearTimeout(id);
-    });
-});
-
-describe('a moment based clock', function () {
-    it('now()', function () {
-        assert.equal(new zeit.MomentClock().now().toString(), moment().toString());
-    });
-});
-
 assert.momentEql = function (expected, actual) {
     assert.equal(expected.toString(), actual.toString());
 }
+
+function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
+    describe(name + ' clock', function () {
+        var clock = new ctr();
+
+        it('now()', function () {
+            assert.equal(clock.now().toString(), timeFn().toString());
+        });
+
+        it('can set and cancel interval', function (done) {
+            var timer = new chai.Timer().start();
+
+            var calls = 0;
+            var id = clock.setInterval(function () {
+                calls++;
+                if (calls === 2) {
+                    clock.clearInterval(id);
+                    timer.stop();
+                    assert.ok(greaterThan(timer.elapsed, intervalFn(2)));
+                    done();
+                }
+            }, intervalFn(1));
+        });
+
+        it('can set timeout', function (done) {
+            var timer = new chai.Timer().start();
+
+            clock.setTimeout(function () {
+                timer.stop();
+                assert.ok(greaterThan(timer.elapsed, intervalFn(1)));
+                done();
+            }, intervalFn(1));
+        });
+
+        it('can cancel timeout', function (done) {
+            var calls = 0;
+            clock.setTimeout(function () {
+                assert.ok(calls === 0);
+                done();
+            }, intervalFn(2));
+            var id = clock.setTimeout(function () {
+                assert.fail();
+            }, intervalFn(1));
+            clock.clearTimeout(id);
+        });
+    });
+}
+
+describeClockContract('date based', zeit.DateClock, function (i) {return 10 * i;}, function () {
+    return new Date();
+}, function(a, b) {return a > b});
+
+describeClockContract('moment based', zeit.MomentClock, function (i) {return moment.duration(10 * i);}, function () {
+    return moment();
+}, function(a, b) {return a > b.asMilliseconds();});
 
 function describeTestClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds) {
     describe(name, function () {
