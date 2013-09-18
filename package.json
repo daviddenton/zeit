@@ -4,7 +4,8 @@
     "description": "zeit ====",
     "main": "index.js",
     "scripts": {
-        "test": "node_modules/mocha/bin/mocha -w"
+        "test": "node_modules/mocha/bin/mocha",
+        "start": "node_modules/mocha/bin/mocha -w"
     },
     "repository": {
         "type": "git",
