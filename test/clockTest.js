@@ -1,4 +1,5 @@
-'use strict'
+'use strict';
+
 var zeit = require('../'), moment = require('moment'), assert = require('chai').assert;
 
 describe('a date based clock', function () {
