@@ -63,7 +63,7 @@ function describeStubClockContract(name, ctrFn, timeAtSeconds, durationOfSeconds
         var customClock;
 
         beforeEach(function (done) {
-            console.log('running before...'));
+            console.log('running before...');
             defaultClock = new ctrFn();
             customClock = new ctrFn(timeAtSeconds(1), durationOfSeconds(2), false);
             done();
