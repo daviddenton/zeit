@@ -9,7 +9,7 @@ assert.momentEql = function (expected, actual) {
     assert.equal(expected.toString(), actual.toString());
 };
 
-function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
+function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greaterThan) {
     describe(name + ' Clock', function () {
         var clock = new ctr();
 
@@ -26,10 +26,10 @@ function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
                 if (calls === 2) {
                     clock.clearInterval(id);
                     timer.stop();
-                    assert.ok(greaterThan(timer.elapsed, intervalFn(2)));
+                    assert.ok(greaterThan(timer.elapsed, durationInMillisFn(20)));
                     done();
                 }
-            }, intervalFn(1));
+            }, durationInMillisFn(10));
         });
 
         it('can set timeout', function (done) {
@@ -37,19 +37,23 @@ function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
 
             clock.setTimeout(function () {
                 timer.stop();
-                assert.ok(greaterThan(timer.elapsed, intervalFn(1)));
+                assert.ok(greaterThan(timer.elapsed, durationInMillisFn(10)));
                 done();
-            }, intervalFn(1));
+            }, durationInMillisFn(10));
         });
 
         it('can cancel timeout', function (done) {
             clock.setTimeout(function () {
                 done();
-            }, intervalFn(10));
+            }, durationInMillisFn(100));
             var id = clock.setTimeout(function () {
                 assert.fail();
-            }, intervalFn(5));
+            }, durationInMillisFn(50));
             clock.clearTimeout(id);
+        });
+
+        it('converts duration to milliseconds', function () {
+            assert.equal(durationInMillisFn(100), 100);
         });
     });
 }
@@ -167,14 +171,18 @@ function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds
             clock.triggerAll();
             assert.equal(cb.count(), 0);
         })
+
+        it('converts duration to milliseconds', function () {
+            assert.equal(durationOfSeconds(1), 1000);
+        });
     });
 }
 
-describeClockContract('Date-Based', zeit.DateClock, function (i) {return 10 * i;}, function () {
+describeRealClockContract('Date-Based', zeit.DateClock, function (i) {return i;}, function () {
     return new Date();
 }, function (a, b) {return a >= b});
 
-describeClockContract('Moment-based', zeit.MomentClock, function (i) {return moment.duration(10 * i);}, function () {
+describeRealClockContract('Moment-based', zeit.MomentClock, function (i) {return moment.duration(i);}, function () {
     return moment();
 }, function (a, b) {return a >= b.asMilliseconds();});
 
