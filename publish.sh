@@ -10,7 +10,11 @@ echo Publishing: $name version \"$newVersion\" \(was $oldVersion\)
 mv $newVersion.tmp package.json
 
 git add package.json
-git commit -m "upped version number to $newVersion"
+git commit -m "released version $newVersion to npm"
 git push
+
+git tag -a $newVersion -m "released version $newVersion to npm"
+git tag
+git push origin $newVersion
 
 npm publish
