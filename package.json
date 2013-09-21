@@ -1,6 +1,6 @@
 {
     "name": "zeit",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Injectable clock and promise scheduler, plus stub versions for easy testing, using native JS or Moment.js Date APIs",
     "main": "index.js",
     "scripts": {
@@ -17,7 +17,6 @@
     "author": "daviddenton",
     "license": "Apache 2.0",
     "readmeFilename": "README.md",
-    "gitHead": "6483eccd2130766837864a5b5aa4fcff5414e7a5",
     "dependencies": {
         "q": "0.9.7",
         "lodash": "2.0.0"
