@@ -1,6 +1,6 @@
 'use strict';
 
-var chai = require('chai'), _ = require('lodash'), q = require('q'), zeit = require('../'), moment = require('moment'), assert = chai.assert;
+var chai = require('chai'), _ = require('lodash'), q = require('q'), zeit = require('../'), assert = chai.assert;
 
 chai.use(require('chai-timers'));
 
