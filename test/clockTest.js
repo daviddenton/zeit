@@ -10,7 +10,7 @@ assert.momentEql = function (expected, actual) {
 };
 
 function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
-    describe(name + ' clock', function () {
+    describe(name + ' Clock', function () {
         var clock = new ctr();
 
         it('now()', function () {
@@ -55,7 +55,7 @@ function describeClockContract(name, ctr, intervalFn, timeFn, greaterThan) {
 }
 
 function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds) {
-    describe(name, function () {
+    describe(name + ' Clock', function () {
 
         it('default settings for clock', function () {
             var clock = new CtrFn();
@@ -170,21 +170,21 @@ function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds
     });
 }
 
-describeClockContract('date based', zeit.DateClock, function (i) {return 10 * i;}, function () {
+describeClockContract('Date-Based', zeit.DateClock, function (i) {return 10 * i;}, function () {
     return new Date();
 }, function (a, b) {return a >= b});
 
-describeClockContract('moment based', zeit.MomentClock, function (i) {return moment.duration(10 * i);}, function () {
+describeClockContract('Moment-based', zeit.MomentClock, function (i) {return moment.duration(10 * i);}, function () {
     return moment();
 }, function (a, b) {return a >= b.asMilliseconds();});
 
-describeStubClockContract('stub moment clock', zeit.StubMomentClock, function (seconds) {
+describeStubClockContract('Stub-Moment', zeit.StubMomentClock, function (seconds) {
     return moment(seconds * 1000)
 }, function (seconds) {
     return moment.duration(seconds, 'second');
 });
 
-describeStubClockContract('stub date clock', zeit.StubDateClock, function (seconds) {
+describeStubClockContract('Stub Date', zeit.StubDateClock, function (seconds) {
     return new Date(seconds * 1000);
 }, function (seconds) {
     return seconds * 1000;

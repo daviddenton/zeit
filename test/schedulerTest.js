@@ -4,7 +4,7 @@ var chai = require('chai'), _ = require('lodash'), q = require('q'), zeit = requ
 
 chai.use(require('chai-timers'));
 
-describe('scheduler', function () {
+describe('Promise Scheduler', function () {
 
     function EventCapture(emitter) {
         var events = {};
@@ -140,6 +140,42 @@ describe('scheduler', function () {
         it('emits the correct events', function () {
             assert.deepEqual(events.captured['start'].length, 2);
             assert.deepEqual(events.captured['error'].length, 2);
+        });
+    });
+
+
+    describe('can query and cancel all active schedules', function () {
+
+        it('cancelling a single schedule', function () {
+            var scheduler = new zeit.PromiseScheduler(zeit.StubMomentClock());
+            var id = scheduler.schedule(function () {
+                return q.resolve();
+            }, moment.duration(10000), 'some name');
+
+            assert.equal(_.size(scheduler.activeSchedules()), 1);
+            assert.equal(scheduler.activeSchedules()[id].name, 'some name');
+
+            scheduler.cancel(id);
+
+            assert.equal(_.size(scheduler.activeSchedules()), 0);
+        });
+
+        it('cancelling all schedules', function () {
+            var scheduler = new zeit.PromiseScheduler(zeit.StubMomentClock());
+            var id1 = scheduler.schedule(function () {
+                return q.resolve();
+            }, moment.duration(10000), 'some name 1');
+            var id2 = scheduler.schedule(function () {
+                return q.resolve();
+            }, moment.duration(10000), 'some name 2');
+
+            assert.equal(_.size(scheduler.activeSchedules()), 2);
+            assert.equal(scheduler.activeSchedules()[id1].name, 'some name 1');
+            assert.equal(scheduler.activeSchedules()[id2].name, 'some name 2');
+
+            scheduler.cancelAll();
+
+            assert.equal(_.size(scheduler.activeSchedules()), 0);
         });
     });
 });
