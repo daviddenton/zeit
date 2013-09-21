@@ -5,6 +5,12 @@ var chai = require('chai'), _ = require('lodash'), q = require('q'), zeit = requ
 chai.use(require('chai-timers'));
 
 function describeSchedulerContractUsing(clockType, ClockCtr) {
+    function aClock() {
+        var clock = new ClockCtr();
+        clock.implicitTick(true);
+        return  clock;
+    }
+
     describe('Promise Scheduler using ' + clockType, function () {
 
         function EventCapture(emitter) {
@@ -23,14 +29,14 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
         }
 
         describe('scheduling a resolved one-off promise', function () {
-            var clock = new ClockCtr();
+            var clock = aClock();
             var scheduler = new zeit.PromiseScheduler(clock);
             var events = new EventCapture(scheduler);
             events.listenTo('start', 'finish');
 
             it('triggers a scheduled promise', function (done) {
                 var id = scheduler.schedule(function () {
-                    return q.resolve();
+                    return q.resolve('some value');
                 }, clock.numberOfMillisecondsAsDuration(10), 'some name');
                 _.defer(function () {
                     assert.deepEqual(clock.triggerAll(), [scheduler.activeSchedules()[id].clockId]);
@@ -50,14 +56,14 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
         });
 
         describe('scheduling a rejected one-off promise', function () {
-            var clock = new ClockCtr();
+            var clock = aClock();
             var scheduler = new zeit.PromiseScheduler(clock);
             var events = new EventCapture(scheduler);
             events.listenTo('start', 'error');
 
             it('triggers a scheduled promise', function (done) {
                 var id = scheduler.schedule(function () {
-                    return q.reject();
+                    return q.reject('some error');
                 }, clock.numberOfMillisecondsAsDuration(10), 'some name');
                 var idsRun = clock.triggerAll();
                 _.defer(function () {
@@ -78,7 +84,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
         });
 
         describe('scheduling a repeating promise', function () {
-            var clock = new ClockCtr();
+            var clock = aClock();
             var scheduler = new zeit.PromiseScheduler(clock);
             var events = new EventCapture(scheduler);
             events.listenTo('start', 'finish');
@@ -89,7 +95,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             it('triggers a repeating promise right away', function (done) {
                 id = scheduler.scheduleEvery(function () {
                     hasRun++;
-                    return q.resolve();
+                    return q.resolve('some value');
                 }, clock.numberOfMillisecondsAsDuration(10), 'some name');
                 setTimeout(function () {
                     assert.equal(hasRun, 1);
@@ -113,7 +119,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
         });
 
         describe('scheduling a repeating rejected promise', function () {
-            var clock = new ClockCtr();
+            var clock = aClock();
             var scheduler = new zeit.PromiseScheduler(clock);
             var events = new EventCapture(scheduler);
             events.listenTo('start', 'error');
@@ -124,7 +130,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             it('triggers a rejected repeating promise right away', function () {
                 id = scheduler.scheduleEvery(function () {
                     hasRun++;
-                    return q.reject();
+                    return q.reject('some error');
                 }, clock.numberOfMillisecondsAsDuration(10), 'some name');
                 _.defer(function () {
                     assert.equal(hasRun, 1);
@@ -149,10 +155,10 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
         describe('can query and cancel all active schedules', function () {
 
             it('cancelling a single schedule', function () {
-                var clock = new ClockCtr();
+                var clock = aClock();
                 var scheduler = new zeit.PromiseScheduler(clock);
                 var id = scheduler.schedule(function () {
-                    return q.resolve();
+                    return q.resolve('some value');
                 }, clock.numberOfMillisecondsAsDuration(10000), 'some name');
 
                 assert.equal(_.size(scheduler.activeSchedules()), 1);
@@ -164,13 +170,13 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             });
 
             it('cancelling all schedules', function () {
-                var clock = new ClockCtr();
+                var clock = aClock();
                 var scheduler = new zeit.PromiseScheduler(clock);
                 var id1 = scheduler.schedule(function () {
-                    return q.resolve();
+                    return q.resolve('some value');
                 }, clock.numberOfMillisecondsAsDuration(10000), 'some name 1');
                 var id2 = scheduler.schedule(function () {
-                    return q.resolve();
+                    return q.resolve('some value');
                 }, clock.numberOfMillisecondsAsDuration(10000), 'some name 2');
 
                 assert.equal(_.size(scheduler.activeSchedules()), 2);
