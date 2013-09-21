@@ -1,7 +1,7 @@
 {
     "name": "zeit",
-    "version": "0.0.1",
-    "description": "zeit ====",
+    "version": "0.0.2",
+    "description": "Injectable clock and promise scheduler, plus stub versions for easy testing, using native JS or Moment.js Date APIs",
     "main": "index.js",
     "scripts": {
         "test": "node_modules/mocha/bin/mocha",
