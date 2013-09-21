@@ -41,6 +41,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             it('emits the correct events', function () {
                 assert.deepEqual(events.captured['start'].length, 1);
                 assert.deepEqual(events.captured['finish'].length, 1);
+                assert.equal(events.captured['error'], undefined);
             });
 
             it('cancels the schedule once run', function () {
@@ -67,6 +68,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
 
             it('emits the correct events', function () {
                 assert.deepEqual(events.captured['start'].length, 1);
+                assert.equal(events.captured['finish'], undefined);
                 assert.deepEqual(events.captured['error'].length, 1);
             });
 
