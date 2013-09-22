@@ -9,12 +9,12 @@ assert.momentEql = function (expected, actual, msg) {
     assert.equal(expected.toString(), actual.toString(), msg);
 };
 
-function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greaterThan) {
+function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greaterThan, assertDateEql) {
     describe(name + ' Clock', function () {
         var clock = new ctr();
 
         it('now()', function () {
-            assert.equal(clock.now().toString(), timeFn().toString());
+            assertDateEql(clock.now(), timeFn());
         });
 
         it('can set and cancel interval', function (done) {
@@ -189,11 +189,13 @@ function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds
 
 describeRealClockContract('Date-Based', zeit.DateClock, function (i) {return i;}, function () {
     return new Date();
-}, function (a, b) {return a >= b});
+}, function (a, b) {return a >= b}, assert.momentEql, function(a, b) {
+    assert.equal(a.getTime(), b.getTime());
+});
 
 describeRealClockContract('Moment-based', zeit.MomentClock, function (i) {return moment.duration(i);}, function () {
     return moment();
-}, function (a, b) {return a >= b.asMilliseconds();});
+}, function (a, b) {return a >= b.asMilliseconds();}, assert.momentEql);
 
 describeStubClockContract('Stub-Moment 2', zeit.StubMomentClock, function (seconds) {
     return moment(seconds * 1000)
