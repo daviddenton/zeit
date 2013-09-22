@@ -5,4 +5,4 @@ A node.js clock and scheduler, intended to take place of the global V8 object fo
 
 Installation
 --
-From npm, simply run: ```npm install zeit```
+Via npm, simply run: ```npm install zeit```
