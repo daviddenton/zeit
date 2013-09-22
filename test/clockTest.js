@@ -5,8 +5,8 @@ var zeit = require('../'), moment = require('moment'), assert = chai.assert;
 
 chai.use(require('chai-timers'));
 
-assert.momentEql = function (expected, actual) {
-    assert.equal(expected.toString(), actual.toString());
+assert.momentEql = function (expected, actual, msg) {
+    assert.equal(expected.toString(), actual.toString(), msg);
 };
 
 function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greaterThan) {
@@ -97,7 +97,8 @@ function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds
 
         it('tick() uses default ticksize', function () {
             var clock = new CtrFn();
-            assert.momentEql(clock.tick(), timeAtSeconds(1));
+            var expected = clock.tick();
+            assert.momentEql(expected, timeAtSeconds(1));
             assert.momentEql(clock.now(), timeAtSeconds(1));
         });
 
@@ -194,7 +195,7 @@ describeRealClockContract('Moment-based', zeit.MomentClock, function (i) {return
     return moment();
 }, function (a, b) {return a >= b.asMilliseconds();});
 
-describeStubClockContract('Stub-Moment', zeit.StubMomentClock, function (seconds) {
+describeStubClockContract('Stub-Moment 2', zeit.StubMomentClock, function (seconds) {
     return moment(seconds * 1000)
 }, function (seconds) {
     return moment.duration(seconds, 'second');
