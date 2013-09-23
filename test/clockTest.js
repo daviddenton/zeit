@@ -55,10 +55,6 @@ function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greate
         it('converts duration to milliseconds', function () {
             assert.equal(clock.numberOfMillisecondsAsDuration(100).toString(), durationInMillisFn(100).toString());
         });
-
-        it('converts milliseconds to duration', function () {
-            assert.equal(clock.durationAsNumberOfMilliseconds(durationInMillisFn(100)), 100);
-        });
     });
 }
 
@@ -179,10 +175,6 @@ function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds
 
         it('converts duration to milliseconds', function () {
             assert.equal(new CtrFn().numberOfMillisecondsAsDuration(1000).toString(), durationOfSeconds(1).toString());
-        });
-
-        it('converts milliseconds to duration', function () {
-            assert.equal(new CtrFn().durationAsNumberOfMilliseconds(durationOfSeconds(1)), 1000);
         });
     });
 }
