@@ -34,8 +34,9 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             var events = new EventCapture(scheduler);
             events.listenTo('start', 'finish');
 
+            var id;
             it('triggers a scheduled promise', function (done) {
-                scheduler.execute(function () {
+                id = scheduler.execute(function () {
                     return q.resolve('some value');
                 }).named('some name').after(clock.numberOfMillisecondsAsDuration(10)).start();
                 assert.equal(clock.triggerAll().length, 1);
@@ -49,6 +50,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             });
 
             it('cancels the schedule once run', function () {
+                assert.equal(scheduler.activeSchedules()[id], undefined);
                 assert.equal(clock.triggerAll().length, 0);
             });
         });
@@ -59,13 +61,14 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             var events = new EventCapture(scheduler);
             events.listenTo('start', 'error');
 
+            var id;
             it('triggers a scheduled promise', function (done) {
-                scheduler.execute(function () {
+                id = scheduler.execute(function () {
                     return q.reject('some error');
                 }).named('some name').after(clock.numberOfMillisecondsAsDuration(10)).start();
 
                 assert.equal(clock.triggerAll().length, 1);
-                _.defer(done)
+                _.defer(done);
             });
 
             it('emits the correct events', function () {
@@ -75,38 +78,36 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             });
 
             it('cancels the schedule once run', function () {
+                assert.equal(scheduler.activeSchedules()[id], undefined);
                 assert.equal(clock.triggerAll().length, 0);
             });
         });
 
-        xdescribe('scheduling a repeating promise', function () {
+        describe('scheduling a repeating promise', function () {
             var clock = aClock();
             var scheduler = new zeit.NaturalLanguageScheduler(clock);
             var events = new EventCapture(scheduler);
             events.listenTo('start', 'finish');
 
             var id;
-            console.log('reset');
-            var hasRun;
-            before(function () {
-                hasRun = 0;
-            })
+            var hasRun = 0;
 
             it('triggers a repeating promise at least once', function (done) {
                 id = scheduler.execute(function () {
                     hasRun++;
-                    console.log('hello', hasRun);
                     return q.resolve('some value');
-                }).named('some name').every(clock.numberOfMillisecondsAsDuration(10)).start();
-                clock.triggerAll();
-                setTimeout(function () {
+                }).named('some name').andRepeatAfter(clock.numberOfMillisecondsAsDuration(10)).start();
+
+                assert.equal(clock.triggerAll().length, 1);
+
+                _.defer(function () {
                     assert.equal(hasRun, 1);
                     done();
-                }, 100);
+                });
             });
 
             it('triggers a repeating promise every time the clock triggers', function (done) {
-                clock.triggerAll();
+                assert.equal(clock.triggerAll().length, 1);
                 setTimeout(function () {
                     assert.equal(hasRun, 2);
                     assert.notEqual([scheduler.activeSchedules()[id]], undefined);
@@ -130,10 +131,10 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             var hasRun = 0;
 
             it('triggers a rejected repeating promise right away', function () {
-                id = scheduler.scheduleEvery(function () {
+                id = scheduler.execute(function () {
                     hasRun++;
                     return q.reject('some error');
-                }, clock.numberOfMillisecondsAsDuration(10), 'some name');
+                }).named('some name').andRepeatAfter(clock.numberOfMillisecondsAsDuration(10)).start();
                 _.defer(function () {
                     assert.equal(hasRun, 1);
                 })
@@ -154,14 +155,14 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             });
         });
 
-        xdescribe('can query and cancel all active schedules', function () {
+        describe('can query and cancel all active schedules', function () {
 
             it('cancelling a single schedule', function () {
                 var clock = aClock();
                 var scheduler = new zeit.NaturalLanguageScheduler(clock);
-                var id = scheduler.schedule(function () {
+                var id = scheduler.execute(function () {
                     return q.resolve('some value');
-                }, clock.numberOfMillisecondsAsDuration(10000), 'some name');
+                }).named('some name').every(clock.numberOfMillisecondsAsDuration(10000)).start();
 
                 assert.equal(_.size(scheduler.activeSchedules()), 1);
                 assert.equal(scheduler.activeSchedules()[id].name, 'some name');
@@ -174,12 +175,12 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             it('cancelling all schedules', function () {
                 var clock = aClock();
                 var scheduler = new zeit.NaturalLanguageScheduler(clock);
-                var id1 = scheduler.schedule(function () {
+                var id1 = scheduler.execute(function () {
                     return q.resolve('some value');
-                }, clock.numberOfMillisecondsAsDuration(10000), 'some name 1');
-                var id2 = scheduler.schedule(function () {
+                }).named('some name 1').every(clock.numberOfMillisecondsAsDuration(10000)).start();
+                var id2 = scheduler.execute(function () {
                     return q.resolve('some value');
-                }, clock.numberOfMillisecondsAsDuration(10000), 'some name 2');
+                }).named('some name 2').every(clock.numberOfMillisecondsAsDuration(10000)).start();
 
                 assert.equal(_.size(scheduler.activeSchedules()), 2);
                 assert.equal(scheduler.activeSchedules()[id1].name, 'some name 1');
