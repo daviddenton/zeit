@@ -138,8 +138,8 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                     });
 
                     it('after completion, the schedule is not rescheduled', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([]);
                         t.assertThereIsNoActiveScheduleFor(scheduleId);
+                        t.triggerAllClockSchedulesAndAssertExecuted([]);
                     });
 
                     it('emits the correct events', function () {
