@@ -99,7 +99,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
 
         function describeForAPromiseThatReturns(description, returnValue, starts, finishes, errors) {
             describe('no repeat for a promise that ' + description, function () {
-                xdescribe('with no delay', function () {
+                describe('with no delay', function () {
                     var t = setUpTest(returnValue);
                     var scheduleId = t.scheduleBuilder.start();
                     var clockId = t.latestClockIdFor(scheduleId);
