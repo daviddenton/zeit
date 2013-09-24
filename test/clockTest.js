@@ -189,7 +189,7 @@ describeRealClockContract('Moment-based', zeit.MomentClock, function (i) {return
     return moment();
 }, function (a, b) {return a >= b.asMilliseconds();}, assert.momentEql);
 
-describeStubClockContract('Stub-Moment 2', zeit.StubMomentClock, function (seconds) {
+describeStubClockContract('Stub Moment', zeit.StubMomentClock, function (seconds) {
     return moment(seconds * 1000)
 }, function (seconds) {
     return moment.duration(seconds, 'second');
