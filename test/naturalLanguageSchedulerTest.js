@@ -69,11 +69,8 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
             scheduleFor: function (scheduleId) {
                 return scheduler.activeSchedule(scheduleId);
             },
-            latestClockIdFor: function (scheduleId) {
-                return this.scheduleFor(scheduleId).clockId;
-            },
             clockTimeoutFor: function (scheduleId) {
-                return clock.timeouts()[this.latestClockIdFor(scheduleId)];
+                return clock.timeouts()[this.scheduleFor(scheduleId).clockId];
             },
             assertInvocationCount: function (expected) {
                 assert.equal(promiseToReturn.invocations(), expected);
@@ -85,8 +82,11 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                 assert.deepEqual(events.captured['finish'].length, finished);
                 assert.deepEqual(events.captured['error'].length, errors);
             },
-            triggerAllClockSchedulesAndAssertExecuted: function (expected) {
-                assert.deepEqual(clock.triggerAll(), expected);
+            triggerAllClockSchedulesAndAssertExecuted: function (expectedScheduleIds) {
+                var expectedClockIds = _.map(expectedScheduleIds, function (scheduleId) {
+                    return scheduler.activeSchedule(scheduleId).clockId;
+                });
+                assert.deepEqual(clock.triggerAll(), expectedClockIds);
             },
             assertThereIsNoActiveScheduleFor: function (scheduleId) {
                 assert.equal(this.scheduleFor(scheduleId), undefined);
@@ -101,7 +101,6 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                 describe('with no initial delay: ', function () {
                     var t = setUpTest(returnValue);
                     var scheduleId = t.scheduleBuilder.start();
-                    var clockId = t.latestClockIdFor(scheduleId);
 
                     it('schedules the callback with no delay', function () {
                         assert.equal(t.scheduleFor(scheduleId).initialDelay, undefined);
@@ -109,13 +108,13 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                     });
 
                     it('when triggered, callback is executed', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([clockId]);
+                        t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
                         t.assertInvocationCount(1);
                     });
 
                     it('after completion, the schedule is not rescheduled', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([]);
                         t.assertThereIsNoActiveScheduleFor(scheduleId);
+                        t.triggerAllClockSchedulesAndAssertExecuted([]);
                     });
 
                     it('emits the correct events', function () {
@@ -127,7 +126,6 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                     var t = setUpTest(returnValue);
                     var delay = t.clock.numberOfMillisecondsAsDuration(1000);
                     var scheduleId = t.scheduleBuilder.after(delay).start();
-                    var clockId = t.latestClockIdFor(scheduleId);
 
                     it('schedules the callback with a delay', function () {
                         assert.equal(t.scheduleFor(scheduleId).initialDelay, delay);
@@ -135,7 +133,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                     });
 
                     it('when triggered, callback is executed', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([clockId]);
+                        t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
                         t.assertInvocationCount(1);
                     });
 
@@ -152,29 +150,31 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                 describe('with set number of invocations', function () {
                     var t = setUpTest(returnValue);
                     var scheduleId = t.scheduleBuilder.exactly(3).start();
-                    var clockId = t.latestClockIdFor(scheduleId);
+
+                    it('schedules the callback with a invocation limit', function () {
+                        assert.equal(t.scheduleFor(scheduleId).invocationsLeft, 3);
+                        assert.equal(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(0));
+                    });
 
                     it('when triggered, callback is executed', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([clockId]);
+                        t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
                         t.assertInvocationCount(1);
-                        clockId = t.latestClockIdFor(scheduleId);
                         assert.equal(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(0));
                     });
 
                     it('when triggered, callback is executed a second time', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([clockId]);
+                        t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
                         t.assertInvocationCount(2);
-                        clockId = t.latestClockIdFor(scheduleId);
                     });
 
                     it('when triggered, callback is executed a final time', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([clockId]);
+                        t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
                         t.assertInvocationCount(3);
                     });
 
                     it('after completion, the schedule is not rescheduled', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([]);
                         t.assertThereIsNoActiveScheduleFor(scheduleId);
+                        t.triggerAllClockSchedulesAndAssertExecuted([]);
                     });
 
                     it('emits the correct events', function () {
@@ -183,26 +183,50 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                 });
             });
 
-            xdescribe('repeating trigger schedule for a promise that ' + description, function () {
+            describe('repeating trigger schedule for a promise that ' + description, function () {
                 describe('with no termination', function () {
                     var t = setUpTest(returnValue);
                     var interval = t.clock.numberOfMillisecondsAsDuration(1000);
                     var scheduleId = t.scheduleBuilder.andRepeatAfter(interval).start();
-                    var clockId = t.latestClockIdFor(scheduleId);
 
-                    it('schedules the callback with repeating', function () {
-                        assert.equal(t.scheduleFor(scheduleId).repeatInterval, undefined);
-                        assert.equal(t.clockTimeoutFor(scheduleId), interval);
+                    it('schedules the callback with repeat interval', function () {
+                        assert.equal(t.scheduleFor(scheduleId).repeatInterval, interval);
+                        assert.equal(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(0));
                     });
 
                     it('when triggered, callback is executed', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([clockId]);
+                        t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
+                        t.assertInvocationCount(1);
+                    });
+
+                    it('when triggered, callback is executed a second time', function () {
+                        t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
+                        t.assertInvocationCount(2);
+                    });
+
+                    it('emits the correct events', function () {
+                        t.assertEventCounts(starts * 2, finishes * 2, errors * 2);
+                    });
+                });
+
+                xdescribe('with post condition', function () {
+                    var t = setUpTest(returnValue);
+                    var interval = t.clock.numberOfMillisecondsAsDuration(1000);
+
+                    var theInvocationCountIsOne = function () {
+                        return t.scheduleFor(scheduleId).invocationCount === 1;
+                    };
+
+                    var scheduleId = t.scheduleBuilder.andRepeatAfter(interval).until(theInvocationCountIsOne).start();
+
+                    it('when triggered, callback is executed', function () {
+                        t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
                         t.assertInvocationCount(1);
                     });
 
                     it('after completion, the schedule is not rescheduled', function () {
-                        t.triggerAllClockSchedulesAndAssertExecuted([]);
                         t.assertThereIsNoActiveScheduleFor(scheduleId);
+                        t.triggerAllClockSchedulesAndAssertExecuted([]);
                     });
 
                     it('emits the correct events', function () {
