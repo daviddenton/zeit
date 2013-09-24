@@ -25,7 +25,7 @@ function EventCapture(emitter) {
 }
 
 //scheduler.execute(promise).andRepeatAfter(100).until(function () {}).start();
-//scheduler.execute(promise).named('bob').every(1000).whilst(function () {}).start();
+//scheduler.execute(promise).named('bob').atFixedIntervalOf(1000).whilst(function () {}).start();
 //scheduler.execute(promise).exactly(2).after(1000).start();
 //scheduler.execute(promise).once().start();
 
@@ -34,7 +34,7 @@ function EventCapture(emitter) {
 // once() - succeeds, fails, exact repetition
 // andRepeatAfter() - repeat only on completion (on first tick)
 // after().andRepeatAfter() - 1st tick initial, then repeat interval, then repeat interval, then still scheduled
-// every() - first tick is repeat, then repeat at interval, then repeat at interval
+// atFixedIntervalOf() - first tick is repeat, then repeat at interval, then repeat at interval
 // andRepeatAfter().until() - post condition, first tick is repeat, second tick cancels
 // andRepeatAfter().whilst() - pre condition, first tick is repeat, second tick cancels, so never scheduled 2nd time
 
@@ -79,8 +79,8 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                 assert.equal(promiseToReturn.invocations(), expected);
             },
             assertEventCounts: function (started, finished, errors) {
-//                console.log(started, finished, errors);
-//                console.log(events.captured['start'].length, events.captured['finish'].length, events.captured['error'].length);
+                //                console.log(started, finished, errors);
+                //                console.log(events.captured['start'].length, events.captured['finish'].length, events.captured['error'].length);
                 assert.deepEqual(events.captured['start'].length, started);
                 assert.deepEqual(events.captured['finish'].length, finished);
                 assert.deepEqual(events.captured['error'].length, errors);
@@ -97,8 +97,8 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
     describe('Natural Promise Scheduler backed by ' + clockType + ':', function () {
 
         function describeForAPromiseThatReturns(description, returnValue, starts, finishes, errors) {
-            describe('non-repeat schedule for a promise that ' + description, function () {
-                describe('with no delay: ', function () {
+            describe('one-off schedule for a promise that ' + description, function () {
+                describe('with no initial delay: ', function () {
                     var t = setUpTest(returnValue);
                     var scheduleId = t.scheduleBuilder.start();
                     var clockId = t.latestClockIdFor(scheduleId);
@@ -123,7 +123,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                     });
                 });
 
-                describe('with delay:', function () {
+                describe('with initial delay:', function () {
                     var t = setUpTest(returnValue);
                     var delay = t.clock.numberOfMillisecondsAsDuration(1000);
                     var scheduleId = t.scheduleBuilder.after(delay).start();
@@ -158,6 +158,7 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
                         t.triggerAllClockSchedulesAndAssertExecuted([clockId]);
                         t.assertInvocationCount(1);
                         clockId = t.latestClockIdFor(scheduleId);
+                        assert.equal(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(0));
                     });
 
                     it('when triggered, callback is executed a second time', function () {
@@ -178,6 +179,34 @@ function describeSchedulerContractUsing(clockType, ClockCtr) {
 
                     it('emits the correct events', function () {
                         t.assertEventCounts(starts * 3, finishes * 3, errors * 3);
+                    });
+                });
+            });
+
+            xdescribe('repeating trigger schedule for a promise that ' + description, function () {
+                describe('with no termination', function () {
+                    var t = setUpTest(returnValue);
+                    var interval = t.clock.numberOfMillisecondsAsDuration(1000);
+                    var scheduleId = t.scheduleBuilder.andRepeatAfter(interval).start();
+                    var clockId = t.latestClockIdFor(scheduleId);
+
+                    it('schedules the callback with repeating', function () {
+                        assert.equal(t.scheduleFor(scheduleId).repeatInterval, undefined);
+                        assert.equal(t.clockTimeoutFor(scheduleId), interval);
+                    });
+
+                    it('when triggered, callback is executed', function () {
+                        t.triggerAllClockSchedulesAndAssertExecuted([clockId]);
+                        t.assertInvocationCount(1);
+                    });
+
+                    it('after completion, the schedule is not rescheduled', function () {
+                        t.triggerAllClockSchedulesAndAssertExecuted([]);
+                        t.assertThereIsNoActiveScheduleFor(scheduleId);
+                    });
+
+                    it('emits the correct events', function () {
+                        t.assertEventCounts(starts, finishes, errors);
                     });
                 });
             });
@@ -283,7 +312,7 @@ describeSchedulerContractUsing('date based clock', zeit.StubDateClock);
 //                    });
 //                });
 //
-//                it('triggers a repeating promise every time the clock triggers', function (done) {
+//                it('triggers a repeating promise atFixedIntervalOf time the clock triggers', function (done) {
 //                    assert.equal(clock.triggerAll().length, 1);
 //                    setTimeout(function () {
 //                        assert.equal(hasRun, 2);
@@ -339,7 +368,7 @@ describeSchedulerContractUsing('date based clock', zeit.StubDateClock);
 //                    var scheduler = new zeit.NaturalLanguageScheduler(clock);
 //                    var id = scheduler.execute(function () {
 //                        return q.resolve('some value');
-//                    }).named('some name').every(clock.numberOfMillisecondsAsDuration(10000)).start();
+//                    }).named('some name').atFixedIntervalOf(clock.numberOfMillisecondsAsDuration(10000)).start();
 //
 //                    assert.equal(_.size(scheduler.activeSchedules()), 1);
 //                    assert.equal(scheduler.activeSchedules()[id].name, 'some name');
@@ -354,10 +383,10 @@ describeSchedulerContractUsing('date based clock', zeit.StubDateClock);
 //                    var scheduler = new zeit.NaturalLanguageScheduler(clock);
 //                    var id1 = scheduler.execute(function () {
 //                        return q.resolve('some value');
-//                    }).named('some name 1').every(clock.numberOfMillisecondsAsDuration(10000)).start();
+//                    }).named('some name 1').atFixedIntervalOf(clock.numberOfMillisecondsAsDuration(10000)).start();
 //                    var id2 = scheduler.execute(function () {
 //                        return q.resolve('some value');
-//                    }).named('some name 2').every(clock.numberOfMillisecondsAsDuration(10000)).start();
+//                    }).named('some name 2').atFixedIntervalOf(clock.numberOfMillisecondsAsDuration(10000)).start();
 //
 //                    assert.equal(_.size(scheduler.activeSchedules()), 2);
 //                    assert.equal(scheduler.activeSchedules()[id1].name, 'some name 1');
