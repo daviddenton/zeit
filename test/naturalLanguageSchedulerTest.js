@@ -111,7 +111,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('initially is scheduled with the defined delay', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), startDelay);
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.lastKnownTime());
+                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
             });
 
             it('triggers when executed', function () {
