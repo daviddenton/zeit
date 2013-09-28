@@ -9,12 +9,16 @@ assert.momentEql = function (expected, actual, msg) {
     assert.equal(expected.toString(), actual.toString(), msg);
 };
 
-function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greaterThan, assertDateEql) {
+function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greaterThan, assertDateEql, incrementFn) {
     describe(name + ' Clock', function () {
         var clock = new ctr();
 
         it('now()', function () {
             assertDateEql(clock.now(), timeFn());
+        });
+
+        it('timeIn()', function () {
+            assertDateEql(clock.timeIn(clock.numberOfMillisecondsAsDuration(2000)), incrementFn(clock.now(), 2000));
         });
 
         it('can set and cancel interval', function (done) {
@@ -73,6 +77,11 @@ function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds
             assert.equal(clock.implicitTick(), false);
             assert.momentEql(clock.now(), timeAtSeconds(1));
             assert.momentEql(clock.tickSize(), durationOfSeconds(2));
+        });
+
+        it('timeIn()', function () {
+            var clock = new CtrFn();
+            assert.momentEql(clock.timeIn(durationOfSeconds(2)), timeAtSeconds(2));
         });
 
         it('now() uses default time and no implicit tick', function () {
@@ -179,15 +188,19 @@ function describeStubClockContract(name, CtrFn, timeAtSeconds, durationOfSeconds
     });
 }
 
-describeRealClockContract('Date-Based', zeit.DateClock, function (i) {return i;}, function () {
-    return new Date();
-}, function (a, b) {return a >= b}, assert.momentEql, function(a, b) {
+describeRealClockContract('Date-Based', zeit.DateClock, function (i) {return i;}, function (optionalTime) {
+    return optionalTime ? new Date(optionalTime) : new Date();
+}, function (a, b) {return a >= b}, function (a, b) {
     assert.equal(a.getTime(), b.getTime());
+}, function (theTime, tickSize) {
+    return new Date(theTime.getTime() + tickSize);
 });
 
-describeRealClockContract('Moment-based', zeit.MomentClock, function (i) {return moment.duration(i);}, function () {
-    return moment();
-}, function (a, b) {return a >= b.asMilliseconds();}, assert.momentEql);
+describeRealClockContract('Moment-based', zeit.MomentClock, function (i) {return moment.duration(i);}, function (optionalTime) {
+    return optionalTime ? moment(optionalTime) : moment();
+}, function (a, b) {return a >= b.asMilliseconds();}, assert.momentEql, function(theTime, tickSize) {
+    return moment(theTime).add(tickSize);
+});
 
 describeStubClockContract('Stub Moment', zeit.StubMomentClock, function (seconds) {
     return moment(seconds * 1000)
