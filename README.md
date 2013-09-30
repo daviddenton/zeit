@@ -28,8 +28,9 @@ the wrong type and you'll get an explicit error:
 - Moment.js implementation - Dates are represented as Moment objects and durations are passed/returned as Duration objects.
 
 ####Real clocks - zeit.DateClock / zeit.MomentClock
-Wraps the native ```set/clearTimeout``` & ```set/clearInterval``` methods and  provides
-additional utility methods below, which are required by the Scheduler implementation:
+Abstracts the creation of date objects (using ```now```),
+and wraps the native ```set/clearTimeout``` & ```set/clearInterval``` methods. Also provides some
+utility methods below, which are required by the Scheduler implementation:
 
 #####now() -> current date
 In the format relative to the implementation (see above).
