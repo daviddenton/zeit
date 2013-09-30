@@ -85,13 +85,13 @@ distinction between repeating and one-off events, rather the usage of the API de
 behaviour.
 
 Schedulers are [Event Emitters](http://nodejs.org/api/events.html) which emit the following
-lifecycle events for each schedule, with the latest schedule details as the message. Note that
-callbacks which throw exceptions (or rejected promises) emit Start & Error (no Finish event),
-and that throwing an exception does not cancel repeat scheduling (to stop rescheduling on an
-error, use the until() predicate when configuring the schedule).
+lifecycle events for each schedule, with the latest schedule details as the message:
 - start
 - finish
 - error
+Note that callbacks/promises which throw exceptions (or rejected promises) emit Start & Error (no
+Finish event), and that throwing an exception does not cancel repeat scheduling (to stop
+rescheduling on an error, use the until() predicate when configuring the schedule).
 
 #####execute(callback/promise factory function) -> schedule item builder
 Initiates the Builder pattern for configuring the schedule item. The passed function can be
