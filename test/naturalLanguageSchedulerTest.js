@@ -268,7 +268,22 @@ function describeSchedulerWhenPromiseIs(name, testFn, expectedStartEvents, expec
             var scheduleId = t.startSchedule(_.identity);
 
             it('returns the cancelled details' ,function() {
-                t.scheduler.cancel(scheduleId);
+                assert.equal(t.scheduler.cancel(scheduleId).id, scheduleId);
+            });
+
+            it('is now not scheduled', function () {
+                t.assertThereIsNoActiveScheduleFor(scheduleId);
+            });
+        });
+
+        describe('cancelling all schedules', function () {
+            var t = testFn();
+            var scheduleId = t.startSchedule(_.identity);
+
+            it('returns all cancelled details' ,function() {
+                var cancelled = t.scheduler.cancelAll();
+                assert.equal(_.size(cancelled), 1);
+                assert.equal(cancelled[scheduleId].id, scheduleId);
             });
 
             it('is now not scheduled', function () {
