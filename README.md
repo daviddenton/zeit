@@ -150,25 +150,25 @@ new zeit.Scheduler(new zeit.DateClock())
 
 2. Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.
 ```javascript
-new zeit.Scheduler(new zeit.DateClock())
+new zeit.Scheduler(new zeit.MomentClock())
     .execute(function () {
         return q.resolve('some happy path resolving promise');
     })
     .exactly(5)
-    .atFixedIntervalOf(30000)
+    .atFixedIntervalOf(moment.duration(30000)
     .start();
 ```
 
-3. Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while 1 is
-1 and no error is thrown by the callback. Starts immediately.
+3. Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while
+executed less than 1000 times and no error is thrown by the callback. Starts immediately.
 ```javascript
-new zeit.Scheduler(new zeit.MomentClock())
+new zeit.Scheduler(new zeit.DateClock())
     .execute(function () {
         return 'some happy value';
     })
-    .andRepeatAfter(moment.duration(60000)
-    .whilst(function() {
-        return 1 === 1;
+    .andRepeatAfter(60000)
+    .whilst(function(scheduleItemDetails) {
+        return scheduleItemDetails.invocationCount < 1000;
     })
     .until(function(err, result) {
         return !err;
