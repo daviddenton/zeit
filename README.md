@@ -68,6 +68,11 @@ If passed, sets the current implicit tick flag.
 ####Scheduler - zeit.PromiseScheduler
 Wraps the native scheduling of repeating and non-repeating [Promises/A compliant](http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post predicates to prevent execution or rescheduling or to control the number of executions. Configuration of the schedules follows the Builder pattern.
 
+Schedulers are Event Emitters, which emits the following events, with the latest schedule details as the message.
+- start
+- finish
+- error
+
 #####execute(promiseFn) -> schedule item builder
 Begins the build pattern for configuring the schedule item.
 
