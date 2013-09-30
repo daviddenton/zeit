@@ -28,11 +28,11 @@ function EventCapture(emitter) {
     };
 }
 
-function PromiseToExecute(returnValue) {
+function PromiseToExecute(actualFn) {
     var invocationsCounter = [];
     var f = function () {
         invocationsCounter.push(0);
-        return returnValue;
+        return actualFn();
     };
     f.invocations = function () {
         return invocationsCounter.length;
@@ -40,11 +40,11 @@ function PromiseToExecute(returnValue) {
     return f;
 }
 
-function setUpTest(ClockCtr, returnValue) {
+function setUpTest(ClockCtr, returnValueFn) {
     return function () {
         var clock = new ClockCtr();
-        var scheduler = new zeit.PromiseScheduler(clock);
-        var promise = new PromiseToExecute(returnValue);
+        var scheduler = new zeit.Scheduler(clock);
+        var promise = new PromiseToExecute(returnValueFn);
         var events = new EventCapture(scheduler).listenTo('start', 'finish', 'error');
         return {
             startTime: clock.now(),
@@ -234,7 +234,7 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
 
         describe('until cannot be scheduled', function () {
             var t = testFn();
-            it('blows up as cannot have a post-condition for a single-shot execution', function () {
+            it('blows up as cannot have a post-condition for a one-off execution', function () {
                 try {
                     t.startSchedule(function (s, clock) {
                         return scheduleBuilderFn(s.clock).until(t.executionCountIs(2));
@@ -247,8 +247,8 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
     });
 }
 
-function describeSchedulerWhenPromiseIs(name, testFn, expectedStartEvents, expectedFinishEvents, expectedErrorEvents) {
-    describe('for a promise which is ' + name + ':', function () {
+function describeSchedulerWhenCallback(name, testFn, expectedStartEvents, expectedFinishEvents, expectedErrorEvents) {
+    describe(name + ':', function () {
         describe('correct events are emitted', function () {
             var t = testFn();
             var scheduleId = t.startSchedule(_.identity);
@@ -291,7 +291,7 @@ function describeSchedulerWhenPromiseIs(name, testFn, expectedStartEvents, expec
             });
         });
 
-        describeNoRepetitionScenariosFor('single shot', testFn, _.identity);
+        describeNoRepetitionScenariosFor('one-off', testFn, _.identity);
 
         describeNoRepetitionScenariosFor('once()', testFn, function (scheduler) {
             return scheduler.once();
@@ -314,12 +314,22 @@ function describeSchedulerWhenPromiseIs(name, testFn, expectedStartEvents, expec
 
 function describeSchedulerUsing(name, ClockCtr) {
     describe('using a ' + name + ' clock:', function () {
-        describeSchedulerWhenPromiseIs('successful', setUpTest(ClockCtr, q.resolve('ok value')), 1, 1, 0);
-        describeSchedulerWhenPromiseIs('rejeced', setUpTest(ClockCtr, q.reject('err value')), 1, 0, 1);
+        describeSchedulerWhenCallback('returns a promise which is resolved', setUpTest(ClockCtr, function() {
+            return q.resolve('ok value');
+        }), 1, 1, 0);
+        describeSchedulerWhenCallback('returns a promise which is then rejected', setUpTest(ClockCtr, function() {
+            return q.reject('err value');
+        }), 1, 0, 1);
+        describeSchedulerWhenCallback('returns a value', setUpTest(ClockCtr, function() {
+            return 'ok value';
+        }), 1, 1, 0);
+        describeSchedulerWhenCallback('throws exception', setUpTest(ClockCtr, function() {
+            throw 'err value';
+        }), 1, 0, 1);
     });
 }
 
-describe('Promise Scheduler', function () {
+describe('Scheduler', function () {
     describeSchedulerUsing('date-based', zeit.StubDateClock);
     describeSchedulerUsing('moment-based', zeit.StubMomentClock);
 });
