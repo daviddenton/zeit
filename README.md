@@ -76,25 +76,27 @@ Increments the current date by the duration in milliseconds, or the current tick
 If passed, sets the current implicit tick flag.
 
 
-####Scheduler - zeit.PromiseScheduler
-Wraps the native scheduling of repeating and non-repeating [Promises/A compliant](http://wiki
-.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post
+####Scheduler - zeit.Scheduler
+Wraps the native scheduling of repeating and non-repeating callbacks or [Promises/A compliant]
+(http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post
 predicates to prevent execution or rescheduling or to control the number of executions.
 Configuration of the schedules follows the Builder pattern. The scheduler doesn't make a
 distinction between repeating and one-off events, rather the usage of the API determines this
 behaviour.
 
 Schedulers are [Event Emitters](http://nodejs.org/api/events.html) which emit the following
-lifecycle events for each schedule,
-with the latest schedule details as the message.
+lifecycle events for each schedule, with the latest schedule details as the message. Note that
+callbacks which throw exceptions (or rejected promises) emit Start & Error (no Finish event),
+and that throwing an exception does not cancel repeat scheduling (to stop rescheduling on an
+error, use the until() predicate when configuring the schedule).
 - start
 - finish
 - error
 
-#####execute(-> promise) -> schedule item builder
-Begins the build pattern for configuring the schedule item. The passed function must return a
-Promises/A compliant promise object. The examples below and the internal Zeit implementation use
-the [Q](http://npmjs.org/package/q) library.
+#####execute(callback/promise factory function) -> schedule item builder
+Initiates the Builder pattern for configuring the schedule item. The passed function can be
+either a standard callback or return a Promises/A compliant promise object. Some of the examples
+below and the internal Zeit implementation use the [Q](http://npmjs.org/package/q) library.
 
 #####activeSchedule(scheduleId) -> schedule details
 Returns details of the schedule, including the configuration and stats such as the invocation count and last run time.
@@ -136,34 +138,35 @@ last execution error and result are passed to this predicate, so asserting on th
 
 ####Examples:
 
-1. Schedule a single execution for 10 seconds time.
+1. Schedule a single execution of a callback for 10 seconds in the future.
 ```javascript
-new zeit.PromiseScheduler(new zeit.DateClock())
+new zeit.Scheduler(new zeit.DateClock())
     .execute(function () {
-        return q.resolve('some happy value');
+        return 'some happy value';
     })
     .after(10000)
     .start();
 ```
 
-2. Schedule 5 times at 30 second intervals, starting immediately.
+2. Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.
 ```javascript
-new zeit.PromiseScheduler(new zeit.DateClock())
+new zeit.Scheduler(new zeit.DateClock())
     .execute(function () {
-        return q.resolve('some happy value');
+        return q.resolve('some happy path resolving promise');
     })
     .exactly(5)
     .atFixedIntervalOf(30000)
     .start();
 ```
 
-3. Schedule repeatedly to trigger at 1 minute breaks (wait for completion) whilst the pre and post conditions are met. Starts immediately.
+3. Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) whilst the
+pre and post conditions are met. Starts immediately.
 ```javascript
-new zeit.PromiseScheduler(new zeit.DateClock())
+new zeit.Scheduler(new zeit.MomentClock())
     .execute(function () {
-        return q.resolve('some happy value');
+        return 'some happy value';
     })
-    .andRepeatAfter(60000)
+    .andRepeatAfter(moment.duration(60000)
     .whilst(somePrePredicate)
     .until(somePrePredicate)
     .start();
