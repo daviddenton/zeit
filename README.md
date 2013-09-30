@@ -132,7 +132,7 @@ Syntactic-sugar for ```exactly(1)```.
 #####whilst(-> boolean) -> schedule item builder
 Sets a pre-execution predicate, which will cancel all rescheduling once it returns false.
 
-#####until(err, result -> boolean) -> schedule item builder
+#####until((err, result) -> boolean) -> schedule item builder
 Sets a post-execution predicate, which will cancel all rescheduling once it returns false. The
 last execution error and result are passed to this predicate, so asserting on these values is possible.
 
