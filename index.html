@@ -30,37 +30,255 @@
 
       </header>
       <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="zeit--" class="anchor" href="#zeit--"><span class="octicon octicon-link"></span></a>zeit  <a href="https://travis-ci.org/daviddenton/zeit"><img src="https://travis-ci.org/daviddenton/zeit.png?branch=master" alt="Build Status"></a>
+</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>A node.js clock and scheduler, intended to take place of the global V8 object for manipulation of time and task scheduling which
+would be handled with calls to <code>set/clearTimeout</code> and <code>set/clearInterval</code>. Zeit ships with a set of controllable Stub clocks
+ which can be used for the manipulation of time and scheduling in tests.</p>
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a name="why-does-this-project-exist" class="anchor" href="#why-does-this-project-exist"><span class="octicon octicon-link"></span></a>Why does this project exist?</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Writing testable code which involves the concept of time is hard work, since you are need to interact with the global "system" object in order to:
+1. Create Date object instances.
+2. Schedule callbacks to be executed at some point in the future.</p>
+
+<p>In order to ensure that this behaviour is acceptably deterministic (and hence testable),
+we need to be able to control both of these events. The Zeit library provides objects to abstract
+ away the global-ness of these operations, which can be used in <a href="http://nodejs.org/">node.js</a> application code to
+ provide a more managed method.</p>
+
+<p>For test code you can use the bundled Stub implementations to effectively control the time in
+your tests, which removes the need for non-deterministic methods for asserting order and expected bevahiour, many of which rely on timeouts.</p>
+
+<p>Zeit currently supports both the native <a href="http://www.w3schools%0A.com/js/js_obj_date.asp">JavaScript Date</a> API and the (IMHO) superior
+<a href="http://momentjs.com/">Moment.js</a> API.</p>
 
 <h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<a name="api-details" class="anchor" href="#api-details"><span class="octicon octicon-link"></span></a>API details</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>Zeit requires that the same supported Date API is used consistently throughout calling code - use
+the wrong type and you'll get an explicit error:</p>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<ul>
+<li>Native Date implementation - Dates are represented as native Date objects, and durations are passed/returned as an integer number of milliseconds.</li>
+<li>Moment.js implementation - Dates are represented as Moment objects and durations are passed/returned as Duration objects.</li>
+</ul><h4>
+<a name="real-clocks---zeitdateclock--zeitmomentclock" class="anchor" href="#real-clocks---zeitdateclock--zeitmomentclock"><span class="octicon octicon-link"></span></a>Real clocks - zeit.DateClock / zeit.MomentClock</h4>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Wraps the native <code>set/clearTimeout</code> &amp; <code>set/clearInterval</code> methods and  provides
+additional utility methods below, which are required by the Scheduler implementation:</p>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<h5>
+<a name="now---current-date" class="anchor" href="#now---current-date"><span class="octicon octicon-link"></span></a>now() -&gt; current date</h5>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>In the format relative to the implementation (see above).</p>
+
+<h5>
+<a name="timeindurationinmilliseconds---augmented-date" class="anchor" href="#timeindurationinmilliseconds---augmented-date"><span class="octicon octicon-link"></span></a>timeIn(durationInMilliseconds) -&gt; augmented date</h5>
+
+<p>Returns the current date incremented by the passed duration.</p>
+
+<h5>
+<a name="numberofmillisecondsasdurationnumberofmilliseconds---duration" class="anchor" href="#numberofmillisecondsasdurationnumberofmilliseconds---duration"><span class="octicon octicon-link"></span></a>numberOfMillisecondsAsDuration(numberOfMilliseconds) -&gt; duration</h5>
+
+<p>In the format relative to the implementation (see above).</p>
+
+<h4>
+<a name="stub-clocks---zeitstubdateclock--zeitstubmomentclock" class="anchor" href="#stub-clocks---zeitstubdateclock--zeitstubmomentclock"><span class="octicon octicon-link"></span></a>Stub clocks - zeit.StubDateClock / zeit.StubMomentClock</h4>
+
+<p>Extends the Real Clock API and provides a means to control the current time by setting it
+directly, or implicitly/explicitly ticking by a set duration. API as above, with the following methods:</p>
+
+<h5>
+<a name="constructorcurrentdate-ticksize-implicittickflag" class="anchor" href="#constructorcurrentdate-ticksize-implicittickflag"><span class="octicon octicon-link"></span></a>Constructor(currentDate, tickSize, implicitTickFlag)</h5>
+
+<p>If no values passed, the following defaults are used:</p>
+
+<ul>
+<li>currentDate: Start of universal time (01-01-1970)</li>
+<li>tickSize: 1 second</li>
+<li>implicitTickFlag: false</li>
+</ul><h5>
+<a name="nownewcurrentdate---current-date" class="anchor" href="#nownewcurrentdate---current-date"><span class="octicon octicon-link"></span></a>now(newCurrentDate) -&gt; current date</h5>
+
+<p>Sets the current date if passed, and then returns the current date in the relative format. If
+implicit ticking is activated, the time will be incremented automatically by the set ticksize.</p>
+
+<h5>
+<a name="intervals----native-id---timeout-duration-" class="anchor" href="#intervals----native-id---timeout-duration-"><span class="octicon octicon-link"></span></a>intervals() -&gt; { native id -&gt; timeout duration }</h5>
+
+<p>Return a Hash of currently scheduled timeout durations by their timeout id.</p>
+
+<h5>
+<a name="timeouts----native-id---timeout-duration-" class="anchor" href="#timeouts----native-id---timeout-duration-"><span class="octicon octicon-link"></span></a>timeouts() -&gt; { native id -&gt; timeout duration }</h5>
+
+<p>Return a Hash of currently scheduled interval durations by their timeout id.</p>
+
+<h5>
+<a name="triggerall---ids-of-all-triggered-callbacks" class="anchor" href="#triggerall---ids-of-all-triggered-callbacks"><span class="octicon octicon-link"></span></a>triggerAll() -&gt; [ids of all triggered callbacks]</h5>
+
+<p>Triggers all of the currently stored timeouts and intervals. After completion, reschedules intervals at the specified duration and discards timeouts.</p>
+
+<h5>
+<a name="lastknowntime---current-date" class="anchor" href="#lastknowntime---current-date"><span class="octicon octicon-link"></span></a>lastKnownTime() -&gt; current date</h5>
+
+<p>Same as <code>now()</code>, but with no ticking.</p>
+
+<h5>
+<a name="ticksizeticksizeinmilliseconds---current-tick-size-duration" class="anchor" href="#ticksizeticksizeinmilliseconds---current-tick-size-duration"><span class="octicon octicon-link"></span></a>tickSize(tickSizeInMilliseconds) -&gt; current tick size duration</h5>
+
+<p>If passed, sets the current ticksize.</p>
+
+<h5>
+<a name="ticknewticksizeinmilliseconds---new-current-ticked-date" class="anchor" href="#ticknewticksizeinmilliseconds---new-current-ticked-date"><span class="octicon octicon-link"></span></a>tick(newTickSizeInMilliseconds) -&gt; new current (ticked) date</h5>
+
+<p>Increments the current date by the duration in milliseconds, or the current ticksize if not passed. Then returns the new current date.</p>
+
+<h5>
+<a name="implicitticknewimplicittickflag---current-implicit-tick-flag" class="anchor" href="#implicitticknewimplicittickflag---current-implicit-tick-flag"><span class="octicon octicon-link"></span></a>implicitTick(newImplicitTickFlag) -&gt; current implicit tick flag</h5>
+
+<p>If passed, sets the current implicit tick flag.</p>
+
+<h4>
+<a name="scheduler---zeitscheduler" class="anchor" href="#scheduler---zeitscheduler"><span class="octicon octicon-link"></span></a>Scheduler - zeit.Scheduler</h4>
+
+<p>Wraps the native scheduling of repeating and non-repeating callbacks or <a href="http://wiki.commonjs.org/wiki/Promises/A">Promises/A compliant</a> promises, but also provides the API to provide pre and post
+predicates to prevent execution or rescheduling or to control the number of executions.
+Configuration of the schedules follows the Builder pattern. The scheduler doesn't make a
+distinction between repeating and one-off events, rather the usage of the API determines this
+behaviour.</p>
+
+<p>Schedulers are <a href="http://nodejs.org/api/events.html">Event Emitters</a> which emit the following
+lifecycle events for each schedule, with the latest schedule details as the message:</p>
+
+<ul>
+<li>start</li>
+<li>finish</li>
+<li>error
+Note that callbacks/promises which throw exceptions (or rejected promises) emit Start &amp; Error (no
+Finish event), and that throwing an exception does not cancel repeat scheduling (to stop
+rescheduling on an error, use the until() predicate when configuring the schedule).</li>
+</ul><h5>
+<a name="executecallbackpromise-factory-function---schedule-item-builder" class="anchor" href="#executecallbackpromise-factory-function---schedule-item-builder"><span class="octicon octicon-link"></span></a>execute(callback/promise factory function) -&gt; Schedule Item Builder</h5>
+
+<p>Initiates the Builder pattern for configuring the schedule item. The passed function can be
+either a standard callback or return a Promises/A compliant promise object. Some of the examples
+below and the internal Zeit implementation use the <a href="http://npmjs.org/package/q">Q</a> library.</p>
+
+<h5>
+<a name="activeschedulescheduleid---schedule-details" class="anchor" href="#activeschedulescheduleid---schedule-details"><span class="octicon octicon-link"></span></a>activeSchedule(scheduleId) -&gt; schedule details</h5>
+
+<p>Returns details of the schedule, including the configuration and stats such as the invocation count and last run time.</p>
+
+<h5>
+<a name="cancelscheduleid---schedule-details" class="anchor" href="#cancelscheduleid---schedule-details"><span class="octicon octicon-link"></span></a>cancel(scheduleId) -&gt; schedule details</h5>
+
+<p>Cancels the schedule and returns the latest details for that schedule, if any.</p>
+
+<h5>
+<a name="cancelall---scheduleid---schedule-details" class="anchor" href="#cancelall---scheduleid---schedule-details"><span class="octicon octicon-link"></span></a>cancelAll() -&gt; (scheduleId -&gt; schedule details)</h5>
+
+<p>Cancels all schedules and returns a Hash of the schedules cancelled.</p>
+
+<h4>
+<a name="schedule-item-builder-returned-by-execute-in-scheduler" class="anchor" href="#schedule-item-builder-returned-by-execute-in-scheduler"><span class="octicon octicon-link"></span></a>Schedule Item Builder (returned by execute() in Scheduler)</h4>
+
+<p>Provides the methods to configure the schedule. Calling <code>start()</code> actually schedules the execution.
+Follows the Builder pattern, so most methods return <code>this</code>.</p>
+
+<h5>
+<a name="namedschedule-name---schedule-item-builder" class="anchor" href="#namedschedule-name---schedule-item-builder"><span class="octicon octicon-link"></span></a>named(schedule name) -&gt; schedule item builder</h5>
+
+<p>Sets the name of the schedule.</p>
+
+<h5>
+<a name="afterdurationinmilliseconds---schedule-item-builder" class="anchor" href="#afterdurationinmilliseconds---schedule-item-builder"><span class="octicon octicon-link"></span></a>after(durationInMilliseconds) -&gt; schedule item builder</h5>
+
+<p>Sets the initial delay before the first execution (like <code>setTimeout</code>).</p>
+
+<h5>
+<a name="atfixedintervalofdurationinmilliseconds---schedule-item-builder" class="anchor" href="#atfixedintervalofdurationinmilliseconds---schedule-item-builder"><span class="octicon octicon-link"></span></a>atFixedIntervalOf(durationInMilliseconds) -&gt; schedule item builder</h5>
+
+<p>Sets the repeat at a fixed rate, regardless of how long the execution takes.</p>
+
+<h5>
+<a name="andrepeatafterdurationinmilliseconds---schedule-item-builder" class="anchor" href="#andrepeatafterdurationinmilliseconds---schedule-item-builder"><span class="octicon octicon-link"></span></a>andRepeatAfter(durationInMilliseconds) -&gt; schedule item builder</h5>
+
+<p>Sets the repeat at a fixed interval after execution has completed (like a tail call to <code>setTimeout</code>).</p>
+
+<h5>
+<a name="exactlynumberofexecutions---schedule-item-builder" class="anchor" href="#exactlynumberofexecutions---schedule-item-builder"><span class="octicon octicon-link"></span></a>exactly(numberOfExecutions) -&gt; schedule item builder</h5>
+
+<p>Sets the maximum number of executions, which may be adjusted by pre and post predicates.</p>
+
+<h5>
+<a name="once---schedule-item-builder" class="anchor" href="#once---schedule-item-builder"><span class="octicon octicon-link"></span></a>once() -&gt; schedule item builder</h5>
+
+<p>Syntactic-sugar for <code>exactly(1)</code>.</p>
+
+<h5>
+<a name="whilst--boolean---schedule-item-builder" class="anchor" href="#whilst--boolean---schedule-item-builder"><span class="octicon octicon-link"></span></a>whilst(-&gt; boolean) -&gt; schedule item builder</h5>
+
+<p>Sets a pre-execution predicate, which will cancel all rescheduling once it returns false.</p>
+
+<h5>
+<a name="untilerr-result---boolean---schedule-item-builder" class="anchor" href="#untilerr-result---boolean---schedule-item-builder"><span class="octicon octicon-link"></span></a>until((err, result) -&gt; boolean) -&gt; schedule item builder</h5>
+
+<p>Sets a post-execution predicate, which will cancel all rescheduling once it returns false. The
+last execution error and result are passed to this predicate, so asserting on these values is possible.</p>
+
+<h4>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples:</h4>
+
+<ol>
+<li>
+<p>Schedule a single execution of a callback for 10 seconds in the future.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
+<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">after</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+</li>
+<li>
+<p>Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">MomentClock</span><span class="p">())</span>
+<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">q</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'some happy path resolving promise'</span><span class="p">);</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">exactly</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">atFixedIntervalOf</span><span class="p">(</span><span class="nx">moment</span><span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="mi">30000</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+</li>
+<li>
+<p>Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while
+executed less than 1000 times and no error is thrown by the callback. Starts immediately.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
+<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">andRepeatAfter</span><span class="p">(</span><span class="mi">60000</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">whilst</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">scheduleItemDetails</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">scheduleItemDetails</span><span class="p">.</span><span class="nx">invocationCount</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">until</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">err</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+</li>
+</ol><h3>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>Via npm, simply run: <code>npm install zeit</code></p>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
