@@ -93,7 +93,7 @@ Note that callbacks/promises which throw exceptions (or rejected promises) emit 
 Finish event), and that throwing an exception does not cancel repeat scheduling (to stop
 rescheduling on an error, use the until() predicate when configuring the schedule).
 
-#####execute(callback/promise factory function) -> schedule item builder
+#####execute(callback/promise factory function) -> Schedule Item Builder
 Initiates the Builder pattern for configuring the schedule item. The passed function can be
 either a standard callback or return a Promises/A compliant promise object. Some of the examples
 below and the internal Zeit implementation use the [Q](http://npmjs.org/package/q) library.
@@ -107,7 +107,7 @@ Cancels the schedule and returns the latest details for that schedule, if any.
 #####cancelAll() -> (scheduleId -> schedule details)
 Cancels all schedules and returns a Hash of the schedules cancelled.
 
-####Schedule Item Builder (returned by execute() in scheduler)
+####Schedule Item Builder (returned by execute() in Scheduler)
 Provides the methods to configure the schedule. Calling ```start()``` actually schedules the execution.
 Follows the Builder pattern, so most methods return ```this```.
 
