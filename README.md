@@ -82,8 +82,10 @@ with the latest schedule details as the message.
 - finish
 - error
 
-#####execute(promiseFn) -> schedule item builder
-Begins the build pattern for configuring the schedule item.
+#####execute(-> promise) -> schedule item builder
+Begins the build pattern for configuring the schedule item. The passed function must return a
+Promises/A compliant promise object. The examples below and the internal Zeit implementation use
+the [Q](http://npmjs.org/package/q) library.
 
 #####activeSchedule(scheduleId) -> schedule details
 Returns details of the schedule, including the configuration and stats such as the invocation count and last run time.
