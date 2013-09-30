@@ -1,11 +1,15 @@
 {
+  "name": "zeit",
+  "version": "0.0.9",
+  "description": "Injectable clock and promise scheduler, plus stub versions for easy testing, using native JS or Moment.js Date APIs",
+  "main": "index.js",
   "scripts": {
-    "start": "node_modules/mocha/bin/mocha -w",
-    "test": "node_modules/mocha/bin/mocha"
+    "test": "node_modules/mocha/bin/mocha",
+    "start": "node_modules/mocha/bin/mocha -w"
   },
   "repository": {
-    "url": "git://github.com/daviddenton/zeit.git",
-    "type": "git"
+    "type": "git",
+    "url": "git://github.com/daviddenton/zeit.git"
   },
   "keywords": [
     "time",
@@ -16,17 +20,13 @@
   "license": "Apache 2.0",
   "readmeFilename": "README.md",
   "dependencies": {
-    "lodash": "2.0.0",
-    "q": "0.9.7"
+    "q": "0.9.7",
+    "lodash": "2.0.0"
   },
   "devDependencies": {
-    "chai-timers": "0.2.0",
-    "chai": "1.7.2",
+    "moment": "2.2.1",
     "mocha": "1.13.0",
-    "moment": "2.2.1"
-  },
-  "main": "index.js",
-  "description": "Injectable clock and promise scheduler, plus stub versions for easy testing, using native JS or Moment.js Date APIs",
-  "version": "0.0.8",
-  "name": "zeit"
+    "chai": "1.7.2",
+    "chai-timers": "0.2.0"
+  }
 }
