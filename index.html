@@ -53,7 +53,7 @@ we need to be able to control both of these events. The Zeit library provides ob
 <p>For test code you can use the bundled Stub implementations to effectively control the time in
 your tests, which removes the need for non-deterministic methods for asserting order and expected bevahiour, many of which rely on timeouts.</p>
 
-<p>Zeit currently supports both the native <a href="http://www.w3schools%0A.com/js/js_obj_date.asp">JavaScript Date</a> API and the (IMHO) superior
+<p>Zeit currently supports both the native <a href="http://www.w3schools.com/js/js_obj_date.asp">JavaScript Date</a> API and the (IMHO) superior
 <a href="http://momentjs.com/">Moment.js</a> API.</p>
 
 <h3>
@@ -228,7 +228,7 @@ Follows the Builder pattern, so most methods return <code>this</code>.</p>
 <h5>
 <a name="untilerr-result---boolean---schedule-item-builder" class="anchor" href="#untilerr-result---boolean---schedule-item-builder"><span class="octicon octicon-link"></span></a>until((err, result) -&gt; boolean) -&gt; schedule item builder</h5>
 
-<p>Sets a post-execution predicate, which will cancel all rescheduling once it returns false. The
+<p>Sets a post-execution predicate, which will cancel all rescheduling once it returns true. The
 last execution error and result are passed to this predicate, so asserting on these values is possible.</p>
 
 <h4>
@@ -271,7 +271,7 @@ executed less than 1000 times and no error is thrown by the callback. Starts imm
     <span class="k">return</span> <span class="nx">scheduleItemDetails</span><span class="p">.</span><span class="nx">invocationCount</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span>
 <span class="p">})</span>
 <span class="p">.</span><span class="nx">until</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">!</span><span class="nx">err</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">err</span><span class="p">;</span>
 <span class="p">})</span>
 <span class="p">.</span><span class="nx">start</span><span class="p">();</span>
 </pre></div>
