@@ -170,7 +170,7 @@ new zeit.Scheduler(new zeit.DateClock())
         return scheduleItemDetails.invocationCount < 1000;
     })
     .until(function(err, result) {
-        return !err;
+        return err;
     })
     .start();
 ```
