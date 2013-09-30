@@ -43,7 +43,7 @@ function PromiseToExecute(returnValue) {
 function setUpTest(ClockCtr, returnValue) {
     return function () {
         var clock = new ClockCtr();
-        var scheduler = new zeit.NaturalLanguageScheduler(clock);
+        var scheduler = new zeit.PromiseScheduler(clock);
         var promise = new PromiseToExecute(returnValue);
         var events = new EventCapture(scheduler).listenTo('start', 'finish', 'error');
         return {
