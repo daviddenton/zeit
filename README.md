@@ -42,7 +42,8 @@ If no values passed, the following defaults are used:
 - implicitTickFlag: false
 
 #####now(newCurrentDate) -> current date
-Sets the current date if passed, and then returns the current date in teh relative format. If implicit ticking is activated, the time will be incremented automatically by the set ticksize.
+Sets the current date if passed, and then returns the current date in the relative format. If
+implicit ticking is activated, the time will be incremented automatically by the set ticksize.
 
 #####intervals()-> { native id -> timeout duration }
 Return a Hash of currently scheduled timeout durations by their timeout id.
@@ -156,5 +157,4 @@ new zeit.PromiseScheduler(new zeit.DateClock())
 ```
 
 ###Installation
---
 Via npm, simply run: ```npm install zeit```
