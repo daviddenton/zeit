@@ -7,11 +7,15 @@ Writing testable code which involves the concept of time is hard work, since you
 1. Create Date object instances.
 2. Schedule callbacks to be executed at some point in the future.
 
-In order to ensure that this behaviour is acceptably deterministic (and hence testable), we need to be able to control both of these events. The Zeit library provides objects to abstract away the global-ness of these operations, which can be used in node.js application code to provide a more managed method.
+In order to ensure that this behaviour is acceptably deterministic (and hence testable),
+we need to be able to control both of these events. The Zeit library provides objects to abstract
+ away the global-ness of these operations, which can be used in [node.js](http://nodejs.org/) application code to
+ provide a more managed method.
 
 For test code you can use the bundled Stub implementations to effectively control the time in your tests, which removes the need for non-deterministic methods for asserting order and expected bevahiour, many of which rely on timeouts.
 
-Zeit currently supports both the native Date API and the (IMHO) superior
+Zeit currently supports both the native [JavaScript Date API](http://www.w3schools
+.com/js/js_obj_date.asp) and the (IMHO) superior
 [Moment.js](http://momentjs.com/) API.
 
 ###API details
