@@ -66,7 +66,7 @@ Increments the current date by the duration in milliseconds, or the current tick
 If passed, sets the current implicit tick flag.
 
 ####Scheduler - zeit.PromiseScheduler
-Wraps the native scheduling of repeating and non-repeating [Promises/A compliant](http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post predicates to prevent execution or rescheduling or to control the number of executions. Configuration of the schedules follows the builder pattern.
+Wraps the native scheduling of repeating and non-repeating [Promises/A compliant](http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post predicates to prevent execution or rescheduling or to control the number of executions. Configuration of the schedules follows the Builder pattern.
 
 #####execute(promiseFn) -> schedule item builder
 Begins the build pattern for configuring the schedule item.
@@ -79,6 +79,33 @@ Cancels the schedule and returns the latest details for that schedule, if any.
 
 #####cancelAll() -> (scheduleId -> schedule details)
 Cancels all schedules and returns a Hash of the schedules cancelled.
+
+####Schedule Item Builder (returned by execute() in scheduler)
+Provides the methods to configure the schedule. Calling ```start()``` actually schedules the execution. Follows the Builder pattern, so most methods return ```this```.
+
+#####named(schedule name) -> schedule item builder
+Sets the name of the schedule.
+
+#####after(durationInMilliseconds) -> schedule item builder
+Sets the initial delay before the first execution (like ```setTimeout```).
+
+#####atFixedIntervalOf(durationInMilliseconds) -> schedule item builder
+Sets the repeat at a fixed rate, regardless of how long the execution takes.
+
+#####andRepeatAfter(durationInMilliseconds) -> schedule item builder
+Sets the repeat at a fixed interval after execution has completed (like a tail call to ```setTimeout```).
+
+#####exactly(numberOfExecutions) -> schedule item builder
+Sets the maximum number of executions, which may be adjusted by pre and post predicates.
+
+#####once() -> schedule item builder
+Syntactic-sugar for ```exactly(1)```.
+
+#####whilst(-> boolean) -> schedule item builder
+Sets a pre-execution predicate, which will cancel all rescheduling once it returns false.
+
+#####until(err, result -> boolean) -> schedule item builder
+Sets a post-execution predicate, which will cancel all rescheduling once it returns false. The last execution error and result are passed to this predicate, so asserting on these values is possible.
 
 ####Examples:
 
