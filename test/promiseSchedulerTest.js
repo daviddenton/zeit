@@ -117,9 +117,6 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('triggers when executed', function () {
                 t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
-            });
-
-            it('has the correct invocation count', function () {
                 t.assertInvocationCount(1);
             });
 
@@ -138,9 +135,6 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('triggers when executed', function () {
                 t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
-            });
-
-            it('has the correct invocation count', function () {
                 t.assertInvocationCount(1);
             });
 
@@ -151,9 +145,6 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('triggers when executed again', function () {
                 t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
-            });
-
-            it('has the correct invocation count', function () {
                 t.assertInvocationCount(2);
             });
 
@@ -170,9 +161,6 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('triggers when executed', function () {
                 t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
-            });
-
-            it('has the correct invocation count', function () {
                 t.assertInvocationCount(1);
             });
 
@@ -183,9 +171,6 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('triggers when executed again', function () {
                 t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
-            });
-
-            it('has the correct invocation count', function () {
                 t.assertInvocationCount(2);
             });
 
@@ -223,9 +208,6 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
 
             it('triggers when executed', function () {
                 t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
-            });
-
-            it('has the correct invocation count', function () {
                 t.assertInvocationCount(1);
             });
 
@@ -240,11 +222,8 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
                 return scheduleBuilderFn(s, clock).whilst(t.executionCountIsLessThan(0));
             });
 
-            it('triggers when executed...', function () {
+            it('triggers when executed, but does not invoke the promise', function () {
                 t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
-            });
-
-            it('but does not invoke the promise', function () {
                 t.assertInvocationCount(0);
             });
 
@@ -269,21 +248,17 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
 }
 
 function describeSchedulerWhenPromiseIs(name, testFn, expectedStartEvents, expectedFinishEvents, expectedErrorEvents) {
-   var testFn = _.partial(testFn);
-    describe(name+':', function () {
+    describe('for a promise which is ' + name + ':', function () {
         describe('correct events are emitted', function () {
             var t = testFn();
             var scheduleId = t.startSchedule(_.identity);
 
             it('triggers when executed', function () {
                 t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
-            });
-
-            it('has the correct invocation count', function () {
                 t.assertInvocationCount(1);
             });
 
-            it('emits the correct events', function () {
+            it('emits then correct events', function () {
                 t.assertEventCounts(expectedStartEvents, expectedFinishEvents, expectedErrorEvents);
             });
         });
@@ -339,14 +314,8 @@ function describeSchedulerWhenPromiseIs(name, testFn, expectedStartEvents, expec
 
 function describeSchedulerUsing(name, ClockCtr) {
     describe('using a ' + name + ' clock:', function () {
-        describeSchedulerWhenPromiseIs('a successful promise', setUpTest(ClockCtr, _.identity(q.resolve('ok value'))), 1, 1, 0);
-        describeSchedulerWhenPromiseIs('a rejected promise', setUpTest(ClockCtr, _.identity(q.reject('err value'))), 1, 0, 1);
-        describeSchedulerWhenPromiseIs('function which returns', setUpTest(ClockCtr, function() {
-            return 'ok value';
-        }), 1, 1, 0);
-//        describeSchedulerWhenPromiseIs('function which throws', setUpTest(ClockCtr, function() {
-//            throw 'err value';
-//        }), 1, 0, 1);
+        describeSchedulerWhenPromiseIs('successful', setUpTest(ClockCtr, q.resolve('ok value')), 1, 1, 0);
+        describeSchedulerWhenPromiseIs('rejeced', setUpTest(ClockCtr, q.reject('err value')), 1, 0, 1);
     });
 }
 
