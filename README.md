@@ -159,16 +159,20 @@ new zeit.Scheduler(new zeit.DateClock())
     .start();
 ```
 
-3. Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) whilst the
-pre and post conditions are met. Starts immediately.
+3. Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while 1 is
+1 and no error is thrown by the callback. Starts immediately.
 ```javascript
 new zeit.Scheduler(new zeit.MomentClock())
     .execute(function () {
         return 'some happy value';
     })
     .andRepeatAfter(moment.duration(60000)
-    .whilst(somePrePredicate)
-    .until(somePrePredicate)
+    .whilst(function() {
+        return 1 === 1;
+    })
+    .until(function(err, result) {
+        return !err;
+    })
     .start();
 ```
 
