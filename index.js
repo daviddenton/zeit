@@ -3,5 +3,4 @@
 var _ = require('lodash');
 
 _.extend(module.exports, require('./lib/clock.js'));
-_.extend(module.exports, require('./lib/scheduler.js'));
-_.extend(module.exports, require('./lib/naturalLanguageScheduler.js'));
+_.extend(module.exports, require('./lib/promiseScheduler.js'));
