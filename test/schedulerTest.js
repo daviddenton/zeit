@@ -156,7 +156,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
         describe('combined with until()', function () {
             var t = testFn();
             var scheduleId = t.startSchedule(function (s, clock) {
-                return scheduleBuilderFn(s, clock).until(t.executionCountIsLessThan(2));
+                return scheduleBuilderFn(s, clock).until(t.executionCountIs(2));
             });
 
             it('triggers when executed', function () {
