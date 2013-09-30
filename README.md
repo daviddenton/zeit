@@ -77,8 +77,7 @@ If passed, sets the current implicit tick flag.
 
 
 ####Scheduler - zeit.Scheduler
-Wraps the native scheduling of repeating and non-repeating callbacks or [Promises/A compliant]
-(http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post
+Wraps the native scheduling of repeating and non-repeating callbacks or [Promises/A compliant](http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post
 predicates to prevent execution or rescheduling or to control the number of executions.
 Configuration of the schedules follows the Builder pattern. The scheduler doesn't make a
 distinction between repeating and one-off events, rather the usage of the API determines this
