@@ -68,8 +68,9 @@ the wrong type and you'll get an explicit error:</p>
 </ul><h4>
 <a name="real-clocks---zeitdateclock--zeitmomentclock" class="anchor" href="#real-clocks---zeitdateclock--zeitmomentclock"><span class="octicon octicon-link"></span></a>Real clocks - zeit.DateClock / zeit.MomentClock</h4>
 
-<p>Wraps the native <code>set/clearTimeout</code> &amp; <code>set/clearInterval</code> methods and  provides
-additional utility methods below, which are required by the Scheduler implementation:</p>
+<p>Abstracts the creation of date objects (using <code>now</code>),
+and wraps the native <code>set/clearTimeout</code> &amp; <code>set/clearInterval</code> methods. Also provides some
+utility methods below, which are required by the Scheduler implementation:</p>
 
 <h5>
 <a name="now---current-date" class="anchor" href="#now---current-date"><span class="octicon octicon-link"></span></a>now() -&gt; current date</h5>
