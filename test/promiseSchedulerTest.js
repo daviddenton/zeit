@@ -319,7 +319,7 @@ function describeSchedulerUsing(name, ClockCtr) {
     });
 }
 
-describe('natural language scheduler', function () {
+describe('Promise Scheduler', function () {
     describeSchedulerUsing('date-based', zeit.StubDateClock);
     describeSchedulerUsing('moment-based', zeit.StubMomentClock);
 });
