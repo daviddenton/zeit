@@ -21,7 +21,8 @@ Zeit requires that the same supported Date API is used consistently throughout c
 - Moment.js implementation - Dates are represented as Moment objects and durations are passed/returned as Duration objects.
 
 ####Real clocks - zeit.DateClock / zeit.MomentClock
-Wraps the native ```set/clearTimeout``` & ```set/ClearInterval``` methods and  provides additional utility methods below, which are required by the Scheduler implementation:
+Wraps the native ```set/clearTimeout``` & ```set/clearInterval``` methods and  provides
+additional utility methods below, which are required by the Scheduler implementation:
 
 #####now() -> current date
 In the format relative to the implementation (see above).
