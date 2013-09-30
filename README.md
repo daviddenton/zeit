@@ -3,7 +3,6 @@
 A node.js clock and scheduler, intended to take place of the global V8 object for manipulation of time and task scheduling which would be handled with calls to ```set/clearTimeout``` and ```set/clearInterval```. Zeit ships with a set of controllable Stub clocks which can be used for the manipulation of time and scheduling in tests.
 
 ###Why does this project exist?
---
 Writing testable code which involves the concept of time is hard work, since you are need to interact with the global "system" object in order to:
 1. Create Date object instances.
 2. Schedule intervals or callbacks to be executed at some point in the future.
@@ -66,10 +65,18 @@ Increments the current date by the duration in milliseconds, or the current tick
 #####implicitTick(newImplicitTickFlag) -> current implicit tick flag
 If passed, sets the current implicit tick flag.
 
-####Scheduler - zeit.PromiseScheduler
-Wraps the native scheduling of repeating and non-repeating [Promises/A compliant](http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post predicates to prevent execution or rescheduling or to control the number of executions. Configuration of the schedules follows the Builder pattern.
 
-Schedulers are Event Emitters, which emits the following events, with the latest schedule details as the message.
+####Scheduler - zeit.PromiseScheduler
+Wraps the native scheduling of repeating and non-repeating [Promises/A compliant](http://wiki
+.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post
+predicates to prevent execution or rescheduling or to control the number of executions.
+Configuration of the schedules follows the Builder pattern. The scheduler doesn't make a
+distinction between repeating and one-off events, rather the usage of the API determines this
+behaviour.
+
+Schedulers are [Event Emitters](http://nodejs.org/api/events.html) which emit the following
+lifecycle events for each schedule,
+with the latest schedule details as the message.
 - start
 - finish
 - error
