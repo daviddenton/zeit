@@ -17,8 +17,7 @@ we need to be able to control both of these events. The Zeit library provides ob
 For test code you can use the bundled Stub implementations to effectively control the time in
 your tests, which removes the need for non-deterministic methods for asserting order and expected bevahiour, many of which rely on timeouts.
 
-Zeit currently supports both the native [JavaScript Date](http://www.w3schools
-.com/js/js_obj_date.asp) API and the (IMHO) superior
+Zeit currently supports both the native [JavaScript Date](http://www.w3schools.com/js/js_obj_date.asp) API and the (IMHO) superior
 [Moment.js](http://momentjs.com/) API.
 
 ###API details
