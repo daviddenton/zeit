@@ -1,6 +1,8 @@
 #zeit  [![Build Status](https://travis-ci.org/daviddenton/zeit.png?branch=master)](https://travis-ci.org/daviddenton/zeit)
 
-A node.js clock and scheduler, intended to take place of the global V8 object for manipulation of time and task scheduling which would be handled with calls to ```set/clearTimeout``` and ```set/clearInterval```. Zeit ships with a set of controllable Stub clocks which can be used for the manipulation of time and scheduling in tests.
+A node.js clock and scheduler, intended to take place of the global V8 object for manipulation of time and task scheduling which
+would be handled with calls to ```set/clearTimeout``` and ```set/clearInterval```. Zeit ships with a set of controllable Stub clocks
+ which can be used for the manipulation of time and scheduling in tests.
 
 ###Why does this project exist?
 Writing testable code which involves the concept of time is hard work, since you are need to interact with the global "system" object in order to:
@@ -12,14 +14,16 @@ we need to be able to control both of these events. The Zeit library provides ob
  away the global-ness of these operations, which can be used in [node.js](http://nodejs.org/) application code to
  provide a more managed method.
 
-For test code you can use the bundled Stub implementations to effectively control the time in your tests, which removes the need for non-deterministic methods for asserting order and expected bevahiour, many of which rely on timeouts.
+For test code you can use the bundled Stub implementations to effectively control the time in
+your tests, which removes the need for non-deterministic methods for asserting order and expected bevahiour, many of which rely on timeouts.
 
 Zeit currently supports both the native [JavaScript Date API](http://www.w3schools
 .com/js/js_obj_date.asp) and the (IMHO) superior
 [Moment.js](http://momentjs.com/) API.
 
 ###API details
-Zeit requires that the same supported Date API is used consistently throughout calling code - use the wrong type and you'll get an explicit error:
+Zeit requires that the same supported Date API is used consistently throughout calling code - use
+the wrong type and you'll get an explicit error:
 - Native Date implementation - Dates are represented as native Date objects, and durations are passed/returned as an integer number of milliseconds.
 - Moment.js implementation - Dates are represented as Moment objects and durations are passed/returned as Duration objects.
 
@@ -37,7 +41,8 @@ Returns the current date incremented by the passed duration.
 In the format relative to the implementation (see above).
 
 ####Stub clocks - zeit.StubDateClock / zeit.StubMomentClock
-Extends the Real Clock API and provides a means to control the current time by setting it directly, or implicitly/explicitly ticking by a set duration. API as above, with the following methods:
+Extends the Real Clock API and provides a means to control the current time by setting it
+directly, or implicitly/explicitly ticking by a set duration. API as above, with the following methods:
 
 ##### Constructor(currentDate, tickSize, implicitTickFlag)
 If no values passed, the following defaults are used:
@@ -49,7 +54,7 @@ If no values passed, the following defaults are used:
 Sets the current date if passed, and then returns the current date in the relative format. If
 implicit ticking is activated, the time will be incremented automatically by the set ticksize.
 
-#####intervals()-> { native id -> timeout duration }
+#####intervals() -> { native id -> timeout duration }
 Return a Hash of currently scheduled timeout durations by their timeout id.
 
 #####timeouts() -> { native id -> timeout duration }
@@ -101,7 +106,8 @@ Cancels the schedule and returns the latest details for that schedule, if any.
 Cancels all schedules and returns a Hash of the schedules cancelled.
 
 ####Schedule Item Builder (returned by execute() in scheduler)
-Provides the methods to configure the schedule. Calling ```start()``` actually schedules the execution. Follows the Builder pattern, so most methods return ```this```.
+Provides the methods to configure the schedule. Calling ```start()``` actually schedules the execution.
+Follows the Builder pattern, so most methods return ```this```.
 
 #####named(schedule name) -> schedule item builder
 Sets the name of the schedule.
@@ -125,7 +131,8 @@ Syntactic-sugar for ```exactly(1)```.
 Sets a pre-execution predicate, which will cancel all rescheduling once it returns false.
 
 #####until(err, result -> boolean) -> schedule item builder
-Sets a post-execution predicate, which will cancel all rescheduling once it returns false. The last execution error and result are passed to this predicate, so asserting on these values is possible.
+Sets a post-execution predicate, which will cancel all rescheduling once it returns false. The
+last execution error and result are passed to this predicate, so asserting on these values is possible.
 
 ####Examples:
 
