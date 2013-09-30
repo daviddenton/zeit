@@ -5,7 +5,7 @@ A node.js clock and scheduler, intended to take place of the global V8 object fo
 ###Why does this project exist?
 Writing testable code which involves the concept of time is hard work, since you are need to interact with the global "system" object in order to:
 1. Create Date object instances.
-2. Schedule intervals or callbacks to be executed at some point in the future.
+2. Schedule callbacks to be executed at some point in the future.
 
 In order to ensure that this behaviour is acceptably deterministic (and hence testable), we need to be able to control both of these events. The Zeit library provides objects to abstract away the global-ness of these operations, which can be used in node.js application code to provide a more managed method.
 
