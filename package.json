@@ -7,6 +7,9 @@
   "keywords": [
     "time",
     "clock",
+    "task",
+    "promise",
+    "timer",
     "scheduler"
   ],
   "repository": {
