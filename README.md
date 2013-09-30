@@ -15,7 +15,7 @@ For test code you can use the bundled Stub implementations to effectively contro
 Zeit currently supports both the native Date API and the (IMHO) superior
 [Moment.js](http://momentjs.com/) API.
 
-###API
+###API details
 Zeit requires that the same supported Date API is used consistently throughout calling code - use the wrong type and you'll get an explicit error:
 - Native Date implementation - Dates are represented as native Date objects, and durations are passed/returned as an integer number of milliseconds.
 - Moment.js implementation - Dates are represented as Moment objects and durations are passed/returned as Duration objects.
@@ -23,14 +23,14 @@ Zeit requires that the same supported Date API is used consistently throughout c
 ####Real clocks - zeit.DateClock / zeit.MomentClock
 Wraps the native ```set/clearTimeout``` & ```set/ClearInterval``` methods and  provides additional utility methods below, which are required by the Scheduler implementation:
 
-#####now()
-Returns the current date.
+#####now() -> current date
+In the format relative to the implementation (see above).
 
-#####timeIn(durationInMilliseconds)
+#####timeIn(durationInMilliseconds) -> augmented date
 Returns the current date incremented by the passed duration.
 
-#####numberOfMillisecondsAsDuration(numberOfMilliseconds)
-Returns
+#####numberOfMillisecondsAsDuration(numberOfMilliseconds) -> duration
+In the format relative to the implementation (see above).
 
 ####Stub clocks - zeit.StubDateClock / zeit.StubMomentClock
 Extends the Real Clock API and provides a means to control the current time by setting it directly, or implicitly/explicitly ticking by a set duration. API as above, with the following methods:
@@ -41,62 +41,79 @@ If no values passed, the following defaults are used:
 - tickSize: 1 second
 - implicitTickFlag: false
 
-#####now(newCurrentDate)
-Sets the current date if passed, and then returns the current date. If implicit ticking is activated, the time will be incremented automatically by the set ticksize. Then returns the current date.
+#####now(newCurrentDate) -> current date
+Sets the current date if passed, and then returns the current date in teh relative format. If implicit ticking is activated, the time will be incremented automatically by the set ticksize.
 
-#####intervals()
-Return a Hash of currently scheduled timeouts by their timeout id.
+#####intervals()-> { native id -> timeout duration }
+Return a Hash of currently scheduled timeout durations by their timeout id.
 
-#####timeouts()
-Return a Hash of currently scheduled intervals by their timeout id.
+#####timeouts() -> { native id -> timeout duration }
+Return a Hash of currently scheduled interval durations by their timeout id.
 
-#####triggerAll()
+#####triggerAll() -> [ids of all triggered callbacks]
 Triggers all of the currently stored timeouts and intervals. After completion, reschedules intervals at the specified duration and discards timeouts.
 
-#####lastKnownTime()
-Returns the current date, without ticking the clock.
+#####lastKnownTime() -> current date
+Same as ```now()```, but with no ticking.
 
-#####tickSize(tickSizeInMilliseconds)
-If passed, sets the current ticksize, then returns the current ticksize.
+#####tickSize(tickSizeInMilliseconds) -> current tick size duration
+If passed, sets the current ticksize.
 
-#####tick(newTickSizeInMilliseconds)
+#####tick(newTickSizeInMilliseconds) -> new current (ticked) date
 Increments the current date by the duration in milliseconds, or the current ticksize if not passed. Then returns the new current date.
 
-#####implicitTick(newImplicitTickFlag)
-If passed, sets the current implicit tick flag, then returns the current implicit tick flag.
+#####implicitTick(newImplicitTickFlag) -> current implicit tick flag
+If passed, sets the current implicit tick flag.
 
 ####Scheduler - zeit.PromiseScheduler
-Wraps the native scheduling of repeating and non-repeating [Promises/A compliant](http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post predicates to prevent execution or rescheduling or to control the number of executions. Examples:
+Wraps the native scheduling of repeating and non-repeating [Promises/A compliant](http://wiki.commonjs.org/wiki/Promises/A) promises, but also provides the API to provide pre and post predicates to prevent execution or rescheduling or to control the number of executions. Configuration of the schedules follows the builder pattern.
 
+#####execute(promiseFn) -> schedule item builder
+Begins the build pattern for configuring the schedule item.
+
+#####activeSchedule(scheduleId) -> schedule details
+Returns details of the schedule, including the configuration and stats such as the invocation count and last run time.
+
+#####cancel(scheduleId) -> schedule details
+Cancels the schedule and returns the latest details for that schedule, if any.
+
+#####cancelAll() -> (scheduleId -> schedule details)
+Cancels all schedules and returns a Hash of the schedules cancelled.
+
+####Examples:
+
+1. Schedule a single execution for 10 seconds time.
 ```javascript
-var scheduler = new zeit.PromiseScheduler(new zeit.DateClock());
-
-function promiseFn() {
-    return q.resolve('some happy value');
-}
-
-// schedule a single execution for 10 seconds time.
-scheduler
-    .execute(promiseFn)
+new zeit.PromiseScheduler(new zeit.DateClock())
+    .execute(function () {
+        return q.resolve('some happy value');
+    })
     .after(10000)
     .start();
+```
 
-// schedule 5 times at 30 second intervals, starting immediately.
-scheduler
-    .execute(promiseFn)
+2. Schedule 5 times at 30 second intervals, starting immediately.
+```javascript
+new zeit.PromiseScheduler(new zeit.DateClock())
+    .execute(function () {
+        return q.resolve('some happy value');
+    })
     .exactly(5)
     .atFixedIntervalOf(30000)
     .start();
+```
 
-// schedule repeatedly to trigger at 1 minute breaks (wait for completion) whilst the pre and post conditions are met. Starts immediately.
-scheduler
-    .execute(promiseFn)
+3. Schedule repeatedly to trigger at 1 minute breaks (wait for completion) whilst the pre and post conditions are met. Starts immediately.
+```javascript
+new zeit.PromiseScheduler(new zeit.DateClock())
+    .execute(function () {
+        return q.resolve('some happy value');
+    })
     .andRepeatAfter(60000)
     .whilst(somePrePredicate)
     .until(somePrePredicate)
     .start();
 ```
-
 
 ###Installation
 --

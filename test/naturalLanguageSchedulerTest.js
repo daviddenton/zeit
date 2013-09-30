@@ -48,6 +48,7 @@ function setUpTest(ClockCtr, returnValue) {
         var events = new EventCapture(scheduler).listenTo('start', 'finish', 'error');
         return {
             startTime: clock.now(),
+            scheduler: scheduler,
             clock: clock,
             executionCountIsLessThan: function (expected) {
                 return function () {
@@ -259,6 +260,19 @@ function describeSchedulerWhenPromiseIs(name, testFn, expectedStartEvents, expec
 
             it('emits then correct events', function () {
                 t.assertEventCounts(expectedStartEvents, expectedFinishEvents, expectedErrorEvents);
+            });
+        });
+
+        describe('cancelling a schedule', function () {
+            var t = testFn();
+            var scheduleId = t.startSchedule(_.identity);
+
+            it('returns the cancelled details' ,function() {
+                t.scheduler.cancel(scheduleId);
+            });
+
+            it('is now not scheduled', function () {
+                t.assertThereIsNoActiveScheduleFor(scheduleId);
             });
         });
 
