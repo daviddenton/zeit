@@ -7,14 +7,16 @@ new zeit.Scheduler(dateClock).execute(function () {
        console.log('every 3 seconds: ' + dateClock.now());
     }).after(3000).start();
 
-//// 2. Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.
-//new zeit.Scheduler(new zeit.MomentClock())
-//    .execute(function () {
-//        return q.resolve('some happy path resolving promise');
-//    })
-//    .exactly(5)
-//    .atFixedIntervalOf(moment.duration(30000))
-//    .start();
+// 2. Schedule a Q promise to execute 5 times at 7 second intervals, starting immediately.
+var momentClock = new zeit.MomentClock();
+new zeit.Scheduler(momentClock)
+    .execute(function () {
+        console.log('every 7 seconds: ' + momentClock.now());
+    })
+    .after(moment.duration(6000))
+    .exactly(5)
+    .atFixedIntervalOf(moment.duration(7000))
+    .start();
 
 // 3. Schedule repeatedly to trigger a callback at 5 second breaks (wait for completion) while
 //    executed less than 1000 times and no error is thrown by the callback. Starts immediately.
