@@ -57,6 +57,56 @@ your tests, which removes the need for non-deterministic methods for asserting o
 <a href="http://momentjs.com/">Moment.js</a> API.</p>
 
 <h3>
+<a name="tldr-examples" class="anchor" href="#tldr-examples"><span class="octicon octicon-link"></span></a>tl;dr Examples:</h3>
+
+<ol>
+<li>
+<p>Schedule a single execution of a callback for 10 seconds in the future.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
+<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">after</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+</li>
+<li>
+<p>Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">MomentClock</span><span class="p">())</span>
+<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">q</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'some happy path resolving promise'</span><span class="p">);</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">exactly</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">atFixedIntervalOf</span><span class="p">(</span><span class="nx">moment</span><span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="mi">30000</span><span class="p">))</span>
+<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+</li>
+<li>
+<p>Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while
+executed less than 1000 times and no error is thrown by the callback. Starts immediately.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
+<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">andRepeatAfter</span><span class="p">(</span><span class="mi">60000</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">whilst</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">scheduleItemDetails</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">scheduleItemDetails</span><span class="p">.</span><span class="nx">invocationCount</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">until</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">err</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+</li>
+</ol><h3>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>Via npm, simply run: <code>npm install zeit</code></p>
+
+<h3>
 <a name="api-details" class="anchor" href="#api-details"><span class="octicon octicon-link"></span></a>API details</h3>
 
 <p>Zeit requires that the same supported Date API is used consistently throughout calling code - use
@@ -230,56 +280,6 @@ Follows the Builder pattern, so most methods return <code>this</code>.</p>
 
 <p>Sets a post-execution predicate, which will cancel all rescheduling once it returns true. The
 last execution error and result are passed to this predicate, so asserting on these values is possible.</p>
-
-<h4>
-<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples:</h4>
-
-<ol>
-<li>
-<p>Schedule a single execution of a callback for 10 seconds in the future.</p>
-
-<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
-<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">after</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
-<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
-</pre></div>
-</li>
-<li>
-<p>Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.</p>
-
-<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">MomentClock</span><span class="p">())</span>
-<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">q</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'some happy path resolving promise'</span><span class="p">);</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">exactly</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="p">.</span><span class="nx">atFixedIntervalOf</span><span class="p">(</span><span class="nx">moment</span><span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="mi">30000</span><span class="p">)</span>
-<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
-</pre></div>
-</li>
-<li>
-<p>Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while
-executed less than 1000 times and no error is thrown by the callback. Starts immediately.</p>
-
-<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
-<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">andRepeatAfter</span><span class="p">(</span><span class="mi">60000</span><span class="p">)</span>
-<span class="p">.</span><span class="nx">whilst</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">scheduleItemDetails</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">scheduleItemDetails</span><span class="p">.</span><span class="nx">invocationCount</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">until</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">err</span><span class="p">;</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
-</pre></div>
-</li>
-</ol><h3>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
-
-<p>Via npm, simply run: <code>npm install zeit</code></p>
       </section>
       <footer>
         <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
