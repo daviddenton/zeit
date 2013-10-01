@@ -1,4 +1,5 @@
 var zeit = require('../'),
+    q = require('q'),
     moment = require('moment');
 
 // 1. Schedule a single execution of a callback for 3 seconds in the future.
@@ -11,7 +12,7 @@ new zeit.Scheduler(dateClock).execute(function () {
 var momentClock = new zeit.MomentClock();
 new zeit.Scheduler(momentClock)
     .execute(function () {
-        console.log('every 7 seconds: ' + momentClock.now());
+        return q('every 7 seconds: ' + momentClock.now()).then(console.log);
     })
     .after(moment.duration(6000))
     .exactly(5)
