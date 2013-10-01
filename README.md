@@ -39,7 +39,7 @@ new zeit.Scheduler(new zeit.MomentClock())
         return q.resolve('some happy path resolving promise');
     })
     .exactly(5)
-    .atFixedIntervalOf(moment.duration(30000)
+    .atFixedIntervalOf(moment.duration(30000))
     .start();
 ```
 
