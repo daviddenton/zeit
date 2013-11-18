@@ -92,7 +92,6 @@ function setUpTest(ClockCtr, returnValueFn) {
 
 function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, scheduleBuilderFn) {
     describe(name + ':', function () {
-
         describe('defaults', function () {
             var t = testFn();
             var scheduleId = t.startSchedule(scheduleBuilderFn);
@@ -232,15 +231,16 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
             });
         });
 
-        describe('until cannot be scheduled', function () {
+        describe('until cannot be scheduled without a repeat', function () {
             var t = testFn();
             it('blows up as cannot have a post-condition for a one-off execution', function () {
                 try {
                     t.startSchedule(function (s, clock) {
-                        return scheduleBuilderFn(s.clock).until(t.executionCountIs(2));
+                        return scheduleBuilderFn(s, clock).until(t.executionCountIs(2));
                     });
+                    assert.fail(name);
                 } catch (err) {
-                    // expected
+                    assert.equal(err.message, 'Cannot specify an until() without repeating!', 'error message');
                 }
             });
         });
