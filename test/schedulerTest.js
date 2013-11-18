@@ -128,7 +128,6 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
         describe('combined with whilst()', function () {
             var t = testFn();
-            var startDelay = t.clock.numberOfMillisecondsAsDuration(AFTER_INTERVAL);
             var scheduleId = t.startSchedule(function (s, clock) {
                 return scheduleBuilderFn(s, clock).whilst(t.executionCountIsLessThan(2));
             });
