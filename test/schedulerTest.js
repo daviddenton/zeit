@@ -153,6 +153,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
         });
 
         describe('combined with until()', function () {
+
             var t = testFn();
             var scheduleId = t.startSchedule(function (s, clock) {
                 return scheduleBuilderFn(s, clock).until(t.executionCountIs(2));
@@ -300,12 +301,20 @@ function describeSchedulerWhenCallback(name, testFn, expectedStartEvents, expect
             return scheduler.exactly(3);
         });
 
-        describeRepetitionScenariosFor('andRepeatAfter()', REPEAT_OF_ONE_SECOND, testFn, function (scheduler, clock) {
+        describeRepetitionScenariosFor('andRepeatAfter(1000ms)', REPEAT_OF_ONE_SECOND, testFn, function (scheduler, clock) {
             return scheduler.andRepeatAfter(clock.numberOfMillisecondsAsDuration(REPEAT_OF_ONE_SECOND));
         });
 
-        describeRepetitionScenariosFor('atFixedIntervalOf()', REPEAT_OF_ONE_SECOND, testFn, function (scheduler, clock) {
+        describeRepetitionScenariosFor('andRepeatAfter(0ms)', ZERO_MILLIS, testFn, function (scheduler, clock) {
+            return scheduler.andRepeatAfter(clock.numberOfMillisecondsAsDuration(ZERO_MILLIS));
+        });
+
+        describeRepetitionScenariosFor('atFixedIntervalOf(1000ms)', REPEAT_OF_ONE_SECOND, testFn, function (scheduler, clock) {
             return scheduler.atFixedIntervalOf(clock.numberOfMillisecondsAsDuration(REPEAT_OF_ONE_SECOND));
+        });
+
+        describeRepetitionScenariosFor('atFixedIntervalOf(0ms)', ZERO_MILLIS, testFn, function (scheduler, clock) {
+            return scheduler.atFixedIntervalOf(clock.numberOfMillisecondsAsDuration(ZERO_MILLIS));
         });
 
     });
