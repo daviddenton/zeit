@@ -47,7 +47,7 @@ new zeit.Scheduler(new zeit.DateClock())
     .start();
 ```
 
-2. Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.
+3. Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.
 ```javascript
 new zeit.Scheduler(new zeit.MomentClock())
     .execute(function () {
@@ -58,7 +58,7 @@ new zeit.Scheduler(new zeit.MomentClock())
     .start();
 ```
 
-3. Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while
+4. Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while
 executed less than 1000 times and no error is thrown by the callback. Starts immediately.
 ```javascript
 new zeit.Scheduler(new zeit.DateClock())
