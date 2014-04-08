@@ -91,8 +91,8 @@ function setUpTest(ClockCtr, returnValueFn) {
 }
 
 function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, scheduleBuilderFn) {
-    describe(name + ':', function () {
-        describe('defaults', function () {
+    describe(name, function () {
+        describe('', function () {
             var t = testFn();
             var scheduleId = t.startSchedule(scheduleBuilderFn);
 
@@ -181,9 +181,9 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 }
 
 function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
-    describe(name + ':', function () {
+    describe(name, function () {
 
-        describe('defaults', function () {
+        describe('', function () {
             var t = testFn();
             var scheduleId = t.startSchedule(scheduleBuilderFn);
 
@@ -248,7 +248,7 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
 }
 
 function describeSchedulerWhenCallback(name, testFn, expectedStartEvents, expectedFinishEvents, expectedErrorEvents) {
-    describe(name + ':', function () {
+    describe(name + ',', function () {
         describe('correct events are emitted', function () {
             var t = testFn();
             var scheduleId = t.startSchedule(_.identity);
@@ -321,7 +321,7 @@ function describeSchedulerWhenCallback(name, testFn, expectedStartEvents, expect
 }
 
 function describeSchedulerUsing(name, ClockCtr) {
-    describe('using a ' + name + ' clock:', function () {
+    describe('(' + name + ' clock): when callback', function () {
         describeSchedulerWhenCallback('returns a promise which is resolved', setUpTest(ClockCtr, function() {
             return q.resolve('ok value');
         }), 1, 1, 0);
