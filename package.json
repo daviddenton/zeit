@@ -16,13 +16,16 @@
     "scheduler"
   ],
   "name": "zeit",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Injectable clock and promise scheduler, plus stub versions for easy testing, using native JS or Moment.js Date APIs",
   "main": "index.js",
   "devDependencies": {
     "chai-timers": "0.2.0",
     "chai": "1.7.2",
-    "mocha": "1.13.0"
+    "mocha": "1.13.0",
+    "coveralls": "~2.10.0",
+    "mocha-lcov-reporter": "0.0.1",
+    "istanbul": "~0.2.7"
   },
   "files": [
     "index.js",
