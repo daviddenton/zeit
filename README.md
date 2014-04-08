@@ -1,5 +1,5 @@
 #zeit
-[![NPM version](https://badge.fury.io/js/zeit.svg)](http://badge.fury.io/js/zeit) 
+[![NPM version](https://badge.fury.io/js/zeit.svg)](http://badge.fury.io/js/zeit)
 [![Build Status](https://travis-ci.org/daviddenton/zeit.png?branch=master)](https://travis-ci.org/daviddenton/zeit)  [![Coverage Status](https://coveralls.io/repos/daviddenton/zeit/badge.png)](https://coveralls.io/r/daviddenton/zeit) [![Dependency Status](https://david-dm.org/daviddenton/zeit.png)](https://david-dm.org/daviddenton/zeit) [![devDependency Status] (https://david-dm.org/daviddenton/zeit/dev-status.png)](https://david-dm.org/daviddenton/zeit#info=devDependencies)
 
 A node.js clock and scheduler, intended to take place of the global V8 object for manipulation of time and task scheduling which
@@ -7,7 +7,7 @@ would be handled with calls to ```set/clearTimeout``` and ```set/clearInterval``
  which can be used for the manipulation of time and scheduling in tests.
 
 ###Why does this project exist?
-Writing testable code which involves the concept of time is hard work, since you are need to interact with the global "system" object in order to:
+Writing testable code which involves the concept of time can be hard work, since you need to interact with the global "system" object in order to:
 1. Create Date object instances.
 2. Schedule callbacks to be executed at some point in the future.
 
