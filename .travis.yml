@@ -2,4 +2,4 @@ language: node_js
 node_js:
   - "0.10"
 script:
-  npm run lint && npm test && ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+  npm run lint && ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
