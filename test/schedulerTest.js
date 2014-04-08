@@ -321,17 +321,17 @@ function describeSchedulerWhenCallback(name, testFn, expectedStartEvents, expect
 }
 
 function describeSchedulerUsing(name, ClockCtr) {
-    describe('(' + name + ' clock): when callback', function () {
+    describe('(' + name + ' clock): when', function () {
         describeSchedulerWhenCallback('returns a promise which is resolved', setUpTest(ClockCtr, function() {
             return q.resolve('ok value');
         }), 1, 1, 0);
         describeSchedulerWhenCallback('returns a promise which is then rejected', setUpTest(ClockCtr, function() {
             return q.reject('err value');
         }), 1, 0, 1);
-        describeSchedulerWhenCallback('returns a value', setUpTest(ClockCtr, function() {
+        describeSchedulerWhenCallback('callback succeeds', setUpTest(ClockCtr, function() {
             return 'ok value';
         }), 1, 1, 0);
-        describeSchedulerWhenCallback('throws exception', setUpTest(ClockCtr, function() {
+        describeSchedulerWhenCallback('exception is thrown', setUpTest(ClockCtr, function() {
             throw 'err value';
         }), 1, 0, 1);
     });
