@@ -125,6 +125,29 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
             });
         });
 
+        describe('combined with at()', function () {
+            var t = testFn();
+            var startDelay = t.clock.numberOfMillisecondsAsDuration(AFTER_INTERVAL);
+            var scheduleId = t.startSchedule(function (s, clock) {
+                return scheduleBuilderFn(s, clock).at(clock.timeIn(startDelay));
+            });
+
+            it('initially is scheduled with the defined delay', function () {
+                assert.deepEqual(t.clockTimeoutFor(scheduleId), startDelay);
+                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
+            });
+
+            it('triggers when executed', function () {
+                t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
+                t.assertInvocationCount(1);
+            });
+
+            it('is rescheduled at the defined interval', function () {
+                assert.deepEqual(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval));
+                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
+            });
+        });
+
         describe('combined with whilst()', function () {
             var t = testFn();
             var scheduleId = t.startSchedule(function (s, clock) {
@@ -198,6 +221,28 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
             var startDelay = t.clock.numberOfMillisecondsAsDuration(AFTER_INTERVAL);
             var scheduleId = t.startSchedule(function (s, clock) {
                 return scheduleBuilderFn(s, clock).after(startDelay);
+            });
+
+            it('initially is scheduled with the defined delay', function () {
+                assert.deepEqual(t.clockTimeoutFor(scheduleId), startDelay);
+                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
+            });
+
+            it('triggers when executed', function () {
+                t.triggerAllClockSchedulesAndAssertExecuted([scheduleId]);
+                t.assertInvocationCount(1);
+            });
+
+            it('is now not rescheduled', function () {
+                t.assertThereIsNoActiveScheduleFor(scheduleId);
+            });
+        });
+
+        describe('at() sets a initial delay at to a specific time', function () {
+            var t = testFn();
+            var startDelay = t.clock.numberOfMillisecondsAsDuration(AFTER_INTERVAL);
+            var scheduleId = t.startSchedule(function (s, clock) {
+                return scheduleBuilderFn(s, clock).at(clock.timeIn(startDelay));
             });
 
             it('initially is scheduled with the defined delay', function () {

@@ -34,6 +34,16 @@ new zeit.Scheduler(new zeit.DateClock())
     .start();
 ```
 
+2. Schedule a single execution of a callback at 10 seconds in the future.
+```javascript
+new zeit.Scheduler(new zeit.DateClock())
+    .execute(function () {
+        return 'some happy value';
+    })
+    .at(new zeit.DateClock().timeIn(10000))
+    .start();
+```
+
 2. Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.
 ```javascript
 new zeit.Scheduler(new zeit.MomentClock())
@@ -160,6 +170,9 @@ Sets the name of the schedule.
 
 #####after(durationInMilliseconds) -> schedule item builder
 Sets the initial delay before the first execution (like ```setTimeout```).
+
+#####at(datetime) -> schedule item builder
+Sets the time of the first execution (like ```setTimeout```).
 
 #####atFixedIntervalOf(durationInMilliseconds) -> schedule item builder
 Sets the repeat at a fixed rate, regardless of how long the execution takes.
