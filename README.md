@@ -1,6 +1,10 @@
 #zeit
 [![NPM version](https://badge.fury.io/js/zeit.svg)](http://badge.fury.io/js/zeit)
-[![Build Status](https://travis-ci.org/daviddenton/zeit.png?branch=master)](https://travis-ci.org/daviddenton/zeit)  [![Coverage Status](https://coveralls.io/repos/daviddenton/zeit/badge.png)](https://coveralls.io/r/daviddenton/zeit) [![Dependency Status](https://david-dm.org/daviddenton/zeit.png)](https://david-dm.org/daviddenton/zeit) [![devDependency Status] (https://david-dm.org/daviddenton/zeit/dev-status.png)](https://david-dm.org/daviddenton/zeit#info=devDependencies)
+[![Build Status](https://travis-ci.org/daviddenton/zeit.png?branch=master)](https://travis-ci.org/daviddenton/zeit)
+[![Coverage Status](https://coveralls.io/repos/daviddenton/zeit/badge.png)](https://coveralls.io/r/daviddenton/zeit)
+[![Dependency Status](https://david-dm.org/daviddenton/zeit.png)](https://david-dm.org/daviddenton/zeit)
+readme tweak[![devDependency Status] (https://david-dm.org/daviddenton/zeit/dev-status.png)]
+(https://david-dm.org/daviddenton/zeit#info=devDependencies)
 
 A node.js clock and scheduler, intended to take place of the global V8 object for manipulation of time and task scheduling which
 would be handled with calls to ```set/clearTimeout``` and ```set/clearInterval```. Zeit ships with a set of controllable Stub clocks
