@@ -4,9 +4,12 @@ var zeit = require('../'),
 
 // 1. Schedule a single execution of a callback for 3 seconds in the future.
 var dateClock = new zeit.DateClock();
-new zeit.Scheduler(dateClock).execute(function () {
+new zeit.Scheduler(dateClock)
+    .execute(function () {
        console.log('every 3 seconds: ' + dateClock.now());
-    }).after(3000).start();
+    })
+    .after(3000)
+    .start();
 
 // 2. Schedule a Q promise to execute 5 times at 7 second intervals, starting immediately.
 var momentClock = new zeit.MomentClock();
