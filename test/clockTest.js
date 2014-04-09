@@ -1,13 +1,16 @@
 'use strict';
 
 var chai = require('chai');
-var zeit = require('../'), moment = require('moment'), assert = chai.assert;
+var zeit = require('../');
+var moment = require('moment')
+var assert = chai.assert;
 
 chai.use(require('chai-timers'));
 
+var TOLERANCE_IN_MILLIS = 10;
 
 assert.momentEql = function (expected, actual, msg) {
-    assert.equal(expected.toString(), actual.toString(), msg);
+    assert.ok(expected.diff(actual) < TOLERANCE_IN_MILLIS, msg);
 };
 
 function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greaterThan, assertDateEql, incrementFn) {
@@ -202,7 +205,7 @@ describeRealClockContract('Date-Based', zeit.DateClock,
     function (i) {return i;},
     function (optionalTime) { return optionalTime ? new Date(optionalTime) : new Date(); },
     function (a, b) {return a >= b},
-    function (a, b) { assert.equal(a.getTime(), b.getTime()); },
+    function (a, b) { assert.ok(a.getTime() - b.getTime() < TOLERANCE_IN_MILLIS); },
     function (theTime, tickSize) { return new Date(theTime.getTime() + tickSize);
 });
 
