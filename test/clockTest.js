@@ -2,7 +2,7 @@
 
 var chai = require('chai');
 var zeit = require('../');
-var moment = require('moment')
+var moment = require('moment');
 var assert = chai.assert;
 
 chai.use(require('chai-timers'));
