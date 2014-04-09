@@ -26,7 +26,8 @@ function describeRealClockContract(name, ctr, durationInMillisFn, timeFn, greate
         });
 
         it('durationUntil()', function () {
-            assert.equal(clock.durationUntil(clock.timeIn(clock.numberOfMillisecondsAsDuration(2000))).toString(), clock.numberOfMillisecondsAsDuration(2000).toString());
+            var actual = clock.durationUntil(clock.timeIn(clock.numberOfMillisecondsAsDuration(2000)));
+            assert.ok((durationInMillisFn(actual) - 2000) < TOLERANCE_IN_MILLIS);
         });
 
         it('can set and cancel interval', function (done) {
