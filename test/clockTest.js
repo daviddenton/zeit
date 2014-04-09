@@ -5,6 +5,7 @@ var zeit = require('../'), moment = require('moment'), assert = chai.assert;
 
 chai.use(require('chai-timers'));
 
+
 assert.momentEql = function (expected, actual, msg) {
     assert.equal(expected.toString(), actual.toString(), msg);
 };
