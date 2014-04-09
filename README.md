@@ -27,6 +27,7 @@ Zeit currently supports both the native [JavaScript Date](http://www.w3schools.c
 
 ###tl;dr Examples:
 
+
 1. Schedule a single execution of a callback for 10 seconds in the future.
 ```javascript
 new zeit.Scheduler(new zeit.DateClock())
