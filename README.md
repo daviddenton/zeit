@@ -99,6 +99,12 @@ Returns the current date incremented by the passed duration.
 #####numberOfMillisecondsAsDuration(numberOfMilliseconds) -> duration
 In the format relative to the implementation (see above).
 
+#####durationUntil(datetime) -> duration
+In the format relative to the implementation (see above).
+
+If you want to provide your own implementation of clock (using another Date library),
+you'll just need to implement these methods and then mixin an instance of TimeoutsAndIntervals.
+
 ####Stub clocks - zeit.StubDateClock / zeit.StubMomentClock
 Extends the Real Clock API and provides a means to control the current time by setting it
 directly, or implicitly/explicitly ticking by a set duration. API as above, with the following methods:
