@@ -31,8 +31,13 @@
       </header>
       <section>
         <h1>
-<a name="zeit--" class="anchor" href="#zeit--"><span class="octicon octicon-link"></span></a>zeit  <a href="https://travis-ci.org/daviddenton/zeit"><img src="https://travis-ci.org/daviddenton/zeit.png?branch=master" alt="Build Status"></a>
-</h1>
+<a name="zeit" class="anchor" href="#zeit"><span class="octicon octicon-link"></span></a>zeit</h1>
+
+<p><a href="http://badge.fury.io/js/zeit"><img src="https://badge.fury.io/js/zeit.svg" alt="NPM version"></a>
+<a href="https://travis-ci.org/daviddenton/zeit"><img src="https://travis-ci.org/daviddenton/zeit.png?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/r/daviddenton/zeit"><img src="https://coveralls.io/repos/daviddenton/zeit/badge.png" alt="Coverage Status"></a>
+<a href="https://david-dm.org/daviddenton/zeit"><img src="https://david-dm.org/daviddenton/zeit.png" alt="Dependency Status"></a>
+<a href="https://david-dm.org/daviddenton/zeit#info=devDependencies"><img src="https://david-dm.org/daviddenton/zeit/dev-status.png" alt="devDependency Status"></a></p>
 
 <p>A node.js clock and scheduler, intended to take place of the global V8 object for manipulation of time and task scheduling which
 would be handled with calls to <code>set/clearTimeout</code> and <code>set/clearInterval</code>. Zeit ships with a set of controllable Stub clocks
@@ -41,7 +46,7 @@ would be handled with calls to <code>set/clearTimeout</code> and <code>set/clear
 <h3>
 <a name="why-does-this-project-exist" class="anchor" href="#why-does-this-project-exist"><span class="octicon octicon-link"></span></a>Why does this project exist?</h3>
 
-<p>Writing testable code which involves the concept of time is hard work, since you are need to interact with the global "system" object in order to:
+<p>Writing testable code which involves the concept of time can be hard work, since you need to interact with the global "system" object in order to:
 1. Create Date object instances.
 2. Schedule callbacks to be executed at some point in the future.</p>
 
@@ -60,48 +65,54 @@ your tests, which removes the need for non-deterministic methods for asserting o
 <a name="tldr-examples" class="anchor" href="#tldr-examples"><span class="octicon octicon-link"></span></a>tl;dr Examples:</h3>
 
 <ol>
-<li>
-<p>Schedule a single execution of a callback for 10 seconds in the future.</p>
-
-<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
-<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">after</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
-<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+<li>Schedule a single execution of a callback for 10 seconds in the future.</li>
+</ol><div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
+    <span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">after</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">start</span><span class="p">();</span>
 </pre></div>
-</li>
-<li>
-<p>Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.</p>
 
-<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">MomentClock</span><span class="p">())</span>
-<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">q</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'some happy path resolving promise'</span><span class="p">);</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">exactly</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="p">.</span><span class="nx">atFixedIntervalOf</span><span class="p">(</span><span class="nx">moment</span><span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="mi">30000</span><span class="p">))</span>
-<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+<ol>
+<li>Schedule a single execution of a callback at 10 seconds in the future.</li>
+</ol><div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
+    <span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">at</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">().</span><span class="nx">timeIn</span><span class="p">(</span><span class="mi">10000</span><span class="p">))</span>
+    <span class="p">.</span><span class="nx">start</span><span class="p">();</span>
 </pre></div>
-</li>
-<li>
-<p>Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while
-executed less than 1000 times and no error is thrown by the callback. Starts immediately.</p>
 
-<div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
-<span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">andRepeatAfter</span><span class="p">(</span><span class="mi">60000</span><span class="p">)</span>
-<span class="p">.</span><span class="nx">whilst</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">scheduleItemDetails</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">scheduleItemDetails</span><span class="p">.</span><span class="nx">invocationCount</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">until</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">err</span><span class="p">;</span>
-<span class="p">})</span>
-<span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+<ol>
+<li>Schedule a Q promise to execute 5 times at 30 second intervals, starting immediately.</li>
+</ol><div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">MomentClock</span><span class="p">())</span>
+    <span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">q</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'some happy path resolving promise'</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">exactly</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">atFixedIntervalOf</span><span class="p">(</span><span class="nx">moment</span><span class="p">.</span><span class="nx">duration</span><span class="p">(</span><span class="mi">30000</span><span class="p">))</span>
+    <span class="p">.</span><span class="nx">start</span><span class="p">();</span>
 </pre></div>
-</li>
-</ol><h3>
+
+<ol>
+<li>Schedule repeatedly to trigger a callback at 1 minute breaks (wait for completion) while
+executed less than 1000 times and no error is thrown by the callback. Starts immediately.</li>
+</ol><div class="highlight highlight-javascript"><pre><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">Scheduler</span><span class="p">(</span><span class="k">new</span> <span class="nx">zeit</span><span class="p">.</span><span class="nx">DateClock</span><span class="p">())</span>
+    <span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">'some happy value'</span><span class="p">;</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">andRepeatAfter</span><span class="p">(</span><span class="mi">60000</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">whilst</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">scheduleItemDetails</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">scheduleItemDetails</span><span class="p">.</span><span class="nx">invocationCount</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">until</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">err</span><span class="p">;</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+
+<h3>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
 
 <p>Via npm, simply run: <code>npm install zeit</code></p>
@@ -136,6 +147,14 @@ utility methods below, which are required by the Scheduler implementation:</p>
 <a name="numberofmillisecondsasdurationnumberofmilliseconds---duration" class="anchor" href="#numberofmillisecondsasdurationnumberofmilliseconds---duration"><span class="octicon octicon-link"></span></a>numberOfMillisecondsAsDuration(numberOfMilliseconds) -&gt; duration</h5>
 
 <p>In the format relative to the implementation (see above).</p>
+
+<h5>
+<a name="durationuntildatetime---duration" class="anchor" href="#durationuntildatetime---duration"><span class="octicon octicon-link"></span></a>durationUntil(datetime) -&gt; duration</h5>
+
+<p>In the format relative to the implementation (see above).</p>
+
+<p>If you want to provide your own implementation of clock (using another Date library),
+you'll just need to implement these methods and then mixin an instance of TimeoutsAndIntervals.</p>
 
 <h4>
 <a name="stub-clocks---zeitstubdateclock--zeitstubmomentclock" class="anchor" href="#stub-clocks---zeitstubdateclock--zeitstubmomentclock"><span class="octicon octicon-link"></span></a>Stub clocks - zeit.StubDateClock / zeit.StubMomentClock</h4>
@@ -251,6 +270,11 @@ Follows the Builder pattern, so most methods return <code>this</code>.</p>
 <p>Sets the initial delay before the first execution (like <code>setTimeout</code>).</p>
 
 <h5>
+<a name="atdatetime---schedule-item-builder" class="anchor" href="#atdatetime---schedule-item-builder"><span class="octicon octicon-link"></span></a>at(datetime) -&gt; schedule item builder</h5>
+
+<p>Sets the time of the first execution (like <code>setTimeout</code>).</p>
+
+<h5>
 <a name="atfixedintervalofdurationinmilliseconds---schedule-item-builder" class="anchor" href="#atfixedintervalofdurationinmilliseconds---schedule-item-builder"><span class="octicon octicon-link"></span></a>atFixedIntervalOf(durationInMilliseconds) -&gt; schedule item builder</h5>
 
 <p>Sets the repeat at a fixed rate, regardless of how long the execution takes.</p>
@@ -282,7 +306,7 @@ Follows the Builder pattern, so most methods return <code>this</code>.</p>
 last execution error and result are passed to this predicate, so asserting on these values is possible.</p>
       </section>
       <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
