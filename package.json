@@ -16,16 +16,16 @@
   ],
   "main": "index.js",
   "devDependencies": {
-    "istanbul": "~0.2.16",
+    "istanbul": "~0.3.2",
     "mocha-lcov-reporter": "0.0.1",
-    "coveralls": "~2.11.0",
-    "mocha": "1.20.1",
-    "chai": "1.9.1",
+    "coveralls": "~2.11.2",
+    "mocha": "2.0.1",
+    "chai": "1.10.0",
     "chai-timers": "0.2.0"
   },
   "dependencies": {
-    "q": "1.0.1",
-    "moment": "2.7.0",
+    "q": "1.1.1",
+    "moment": "2.8.3",
     "lodash": "2.4.1"
   },
   "readmeFilename": "README.md",
