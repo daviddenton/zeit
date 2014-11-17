@@ -1,11 +1,23 @@
 {
+  "description": "Injectable clock and promise scheduler, plus stub versions for easy testing, using native JS or Moment.js Date APIs",
+  "version": "1.1.5",
+  "name": "zeit",
+  "author": "daviddenton",
+  "keywords": [
+    "time",
+    "clock",
+    "task",
+    "promise",
+    "timer",
+    "scheduler"
+  ],
   "repository": {
-    "type": "git",
-    "url": "git://github.com/daviddenton/zeit.git"
+    "url": "git://github.com/daviddenton/zeit.git",
+    "type": "git"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha",
-    "start": "node_modules/mocha/bin/mocha -w"
+    "start": "node_modules/mocha/bin/mocha -w",
+    "test": "node_modules/mocha/bin/mocha"
   },
   "files": [
     "index.js",
@@ -16,30 +28,18 @@
   ],
   "main": "index.js",
   "devDependencies": {
-    "istanbul": "~0.3.2",
-    "mocha-lcov-reporter": "0.0.1",
-    "coveralls": "~2.11.2",
-    "mocha": "2.0.1",
+    "chai-timers": "0.2.0",
     "chai": "1.10.0",
-    "chai-timers": "0.2.0"
+    "mocha": "2.0.1",
+    "coveralls": "~2.11.2",
+    "mocha-lcov-reporter": "0.0.1",
+    "istanbul": "~0.3.2"
   },
   "dependencies": {
-    "q": "1.1.1",
+    "lodash": "2.4.1",
     "moment": "2.8.3",
-    "lodash": "2.4.1"
+    "q": "1.1.1"
   },
   "readmeFilename": "README.md",
-  "license": "Apache 2.0",
-  "keywords": [
-    "time",
-    "clock",
-    "task",
-    "promise",
-    "timer",
-    "scheduler"
-  ],
-  "author": "daviddenton",
-  "name": "zeit",
-  "version": "1.1.4",
-  "description": "Injectable clock and promise scheduler, plus stub versions for easy testing, using native JS or Moment.js Date APIs"
+  "license": "Apache 2.0"
 }
