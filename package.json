@@ -4,11 +4,11 @@
   "description": "Injectable clock and promise scheduler, plus stub versions for easy testing, using native JS or Moment.js Date APIs",
   "main": "index.js",
   "devDependencies": {
-    "istanbul": "0.3.13",
-    "mocha-lcov-reporter": "0.0.2",
-    "coveralls": "2.11.2",
-    "mocha": "2.2.4",
-    "chai": "2.3.0",
+    "istanbul": "0.4.2",
+    "mocha-lcov-reporter": "1.1.0",
+    "coveralls": "2.11.6",
+    "mocha": "2.4.5",
+    "chai": "3.5.0",
     "chai-timers": "0.2.0"
   },
   "files": [
@@ -38,8 +38,8 @@
   "license": "Apache 2.0",
   "readmeFilename": "README.md",
   "dependencies": {
-    "q": "1.3.0",
-    "moment": "2.10.2",
-    "lodash": "3.7.0"
+    "q": "1.4.1",
+    "moment": "2.11.2",
+    "lodash": "4.5.0"
   }
 }
