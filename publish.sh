@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 newVersion=$1
 oldVersion=`./tools/jq .version package.json`
 name=`./tools/jq .name package.json`
@@ -16,5 +18,8 @@ git push
 git tag -a $newVersion -m "released version $newVersion to npm"
 git tag
 git push origin $newVersion
+
+rm -rf node_modules
+npm install
 
 npm publish
