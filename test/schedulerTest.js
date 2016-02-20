@@ -102,7 +102,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('has a 0ms initial delay', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(0));
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.lastKnownTime());
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.lastKnownTime());
             });
         });
 
@@ -115,7 +115,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('initially is scheduled with the defined delay', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), startDelay);
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
             });
 
             it('triggers when executed', function () {
@@ -125,7 +125,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('is rescheduled at the defined interval', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval));
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
             });
         });
 
@@ -138,7 +138,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('initially is scheduled with the defined delay', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), startDelay);
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
             });
 
             it('triggers when executed', function () {
@@ -148,7 +148,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('is rescheduled at the defined interval', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval));
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
             });
         });
 
@@ -165,7 +165,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('is rescheduled at the defined interval', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval));
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
             });
 
             it('triggers when executed again', function () {
@@ -192,7 +192,7 @@ function describeRepetitionScenariosFor(name, expectedRepeatInterval, testFn, sc
 
             it('is rescheduled at the defined interval', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval));
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(t.clock.numberOfMillisecondsAsDuration(expectedRepeatInterval)));
             });
 
             it('triggers when executed again', function () {
@@ -216,7 +216,7 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
 
             it('has a 0ms initial delay', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), t.clock.numberOfMillisecondsAsDuration(0));
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.lastKnownTime());
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.lastKnownTime());
             });
         });
 
@@ -229,7 +229,7 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
 
             it('initially is scheduled with the defined delay', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), startDelay);
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
             });
 
             it('triggers when executed', function () {
@@ -251,7 +251,7 @@ function describeNoRepetitionScenariosFor(name, testFn, scheduleBuilderFn) {
 
             it('initially is scheduled with the defined delay', function () {
                 assert.deepEqual(t.clockTimeoutFor(scheduleId), startDelay);
-                assert.deepEqual(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
+                assert.momentEql(t.scheduleFor(scheduleId).nextTriggerTime, t.clock.timeIn(startDelay));
             });
 
             it('triggers when executed', function () {
