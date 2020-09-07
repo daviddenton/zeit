@@ -24,7 +24,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "lodash": "4.5.0",
+    "lodash": "4.17.20",
     "moment": "2.11.2",
     "q": "1.4.1"
   },
